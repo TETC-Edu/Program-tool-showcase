@@ -1,0 +1,1895 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TETC Data Dashboard · 9th Grade Year</title>
+<style>
+  :root {
+    --teal: #186172;
+    --teal-dark: #0d4854;
+    --teal-light: #e8f1f3;
+    --magenta: #BD2F7F;
+    --magenta-dark: #8a1f5d;
+    --magenta-light: #fce8f1;
+    --gold: #c9923a;
+    --gold-light: #fdf3df;
+    --green: #2d8659;
+    --green-light: #e8f4ee;
+    --ink: #1a1a1a;
+    --ink-soft: #444;
+    --ink-mute: #777;
+    --bg: #fafafa;
+    --card: #ffffff;
+    --border: #e5e5e5;
+    --shadow: 0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.04);
+    --cat-physics: #4a6fa5;
+    --cat-structures: #c97f3e;
+    --cat-robotics: #5d3f8a;
+    --cat-chem: #2d8659;
+    --cat-laser: #b04a2e;
+    --cat-cad: #7a8b3a;
+    --nav-w: 260px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Inter", system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.5;
+    font-size: 15px;
+  }
+
+  /* ===== Layout ===== */
+  .app { display: flex; min-height: 100vh; }
+
+  /* ===== Left Nav ===== */
+  .nav {
+    width: var(--nav-w);
+    background: var(--teal);
+    color: white;
+    padding: 0;
+    flex-shrink: 0;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+  }
+  .nav-brand {
+    padding: 24px 24px 20px;
+    border-bottom: 3px solid var(--magenta);
+  }
+  .nav-brand .logo {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .nav-brand .sub {
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    opacity: 0.75;
+    font-weight: 600;
+  }
+  .nav-section {
+    padding: 18px 0 6px;
+    margin-top: 4px;
+  }
+  .nav-section .section-label {
+    font-size: 10px;
+    letter-spacing: 1.6px;
+    text-transform: uppercase;
+    opacity: 0.55;
+    font-weight: 700;
+    padding: 0 24px;
+    margin-bottom: 8px;
+  }
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 11px 24px;
+    cursor: pointer;
+    transition: all 0.15s;
+    border-left: 3px solid transparent;
+    font-size: 14px;
+    font-weight: 500;
+    color: rgba(255,255,255,0.85);
+  }
+  .nav-item:hover {
+    background: rgba(255,255,255,0.06);
+    color: white;
+  }
+  .nav-item.active {
+    background: rgba(255,255,255,0.1);
+    border-left-color: var(--magenta);
+    color: white;
+    font-weight: 600;
+  }
+  .nav-item .num {
+    width: 22px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.12);
+    font-size: 11px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .nav-item.active .num {
+    background: var(--magenta);
+  }
+  .nav-footer {
+    margin-top: auto;
+    padding: 18px 24px 22px;
+    font-size: 11px;
+    opacity: 0.6;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    line-height: 1.5;
+  }
+
+  /* ===== Main content ===== */
+  .main {
+    flex: 1;
+    min-width: 0;
+  }
+  .page-header {
+    padding: 30px 48px 26px;
+    background: white;
+    border-bottom: 1px solid var(--border);
+  }
+  .page-header .crumb {
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--magenta);
+    margin-bottom: 6px;
+    font-weight: 700;
+  }
+  .page-header h1 {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: -0.4px;
+    margin-bottom: 8px;
+  }
+  .page-header .desc {
+    font-size: 15px;
+    color: var(--ink-soft);
+    max-width: 760px;
+  }
+  .page-header .source {
+    font-size: 12px;
+    color: var(--ink-mute);
+    margin-top: 12px;
+    font-style: italic;
+  }
+
+  .page-body {
+    padding: 28px 48px 80px;
+    max-width: 1280px;
+  }
+
+  /* Page hide/show */
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* ===== Common components ===== */
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+  .stat {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px 18px;
+  }
+  .stat .num {
+    font-size: 30px;
+    font-weight: 700;
+    color: var(--teal);
+    line-height: 1;
+    margin-bottom: 6px;
+    letter-spacing: -0.5px;
+  }
+  .stat .num.warn { color: var(--magenta); }
+  .stat .num.good { color: var(--green); }
+  .stat .label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: var(--ink-mute);
+    font-weight: 600;
+  }
+
+  .section-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--teal);
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    margin: 4px 0 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-title::before {
+    content: "";
+    display: block;
+    width: 4px;
+    height: 18px;
+    background: var(--magenta);
+    border-radius: 2px;
+  }
+
+  .chart-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 24px 28px;
+    margin-bottom: 24px;
+    box-shadow: var(--shadow);
+  }
+
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    padding: 12px 16px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: 18px;
+    font-size: 12px;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--ink-soft);
+    font-weight: 500;
+  }
+  .legend-item .cat-dot { width: 10px; height: 10px; border-radius: 50%; }
+  .cat-physics { background: var(--cat-physics); }
+  .cat-structures { background: var(--cat-structures); }
+  .cat-robotics { background: var(--cat-robotics); }
+  .cat-chem { background: var(--cat-chem); }
+  .cat-laser { background: var(--cat-laser); }
+  .cat-cad { background: var(--cat-cad); }
+
+  /* Interpretation block */
+  .interp {
+    background: var(--magenta-light);
+    border-left: 4px solid var(--magenta);
+    padding: 22px 26px;
+    border-radius: 0 8px 8px 0;
+    margin-top: 32px;
+  }
+  .interp .label {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--magenta-dark);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .interp p { color: var(--ink-soft); margin-bottom: 12px; font-size: 14.5px; }
+  .interp p:last-child { margin-bottom: 0; }
+  .interp strong { color: var(--ink); }
+  .interp .findings {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(189, 47, 127, 0.2);
+  }
+  .interp .findings .finding {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 10px;
+    font-size: 14px;
+  }
+  .interp .findings .finding:last-child { margin-bottom: 0; }
+  .interp .findings .marker {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--magenta);
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 2px;
+  }
+
+  .hint {
+    font-size: 13px;
+    color: var(--ink-mute);
+    font-style: italic;
+    margin-top: 10px;
+  }
+
+  /* Detail panel */
+  .detail-panel {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin-bottom: 24px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+  .detail-panel .panel-header {
+    background: var(--teal);
+    color: white;
+    padding: 14px 22px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .detail-panel .panel-header h3 {
+    font-size: 16px;
+    font-weight: 600;
+  }
+  .detail-panel .panel-header .meta {
+    font-size: 13px;
+    opacity: 0.85;
+  }
+  .detail-panel .panel-body {
+    padding: 18px 22px 22px;
+  }
+  .detail-panel .empty {
+    color: var(--ink-mute);
+    font-size: 14px;
+    font-style: italic;
+    text-align: center;
+    padding: 32px 22px;
+  }
+  .lesson-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .lesson-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px 6px 8px;
+    background: var(--teal-light);
+    border: 1px solid #cfdde0;
+    border-radius: 18px;
+    font-size: 13px;
+    color: var(--ink);
+    font-weight: 500;
+  }
+  .lesson-pill .cat-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  /* ============ Page 1: Concept Frequency ============ */
+  .bar-chart {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .bar-row {
+    display: grid;
+    grid-template-columns: 200px 1fr 36px;
+    align-items: center;
+    gap: 14px;
+    padding: 4px 0;
+    cursor: pointer;
+    transition: background 0.15s;
+    border-radius: 4px;
+  }
+  .bar-row:hover { background: var(--teal-light); }
+  .bar-row .concept-name {
+    font-size: 13.5px;
+    font-weight: 500;
+    color: var(--ink-soft);
+    text-align: right;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .bar-row.top .concept-name { color: var(--ink); font-weight: 600; }
+  .bar-track {
+    height: 22px;
+    background: #f3f3f3;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--teal) 0%, var(--teal-dark) 100%);
+    border-radius: 4px;
+    transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    width: 0;
+  }
+  .bar-row.tier-1 .bar-fill { background: linear-gradient(90deg, var(--magenta) 0%, var(--magenta-dark) 100%); }
+  .bar-row.tier-3 .bar-fill { background: linear-gradient(90deg, #b8b8b8 0%, #999 100%); }
+  .bar-row .count {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ink);
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+  .bar-row.tier-3 .count { color: var(--ink-mute); }
+  .tier-label {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--ink-mute);
+    padding: 14px 0 6px;
+    border-top: 1px dashed #ddd;
+    margin-top: 8px;
+  }
+  .tier-label:first-child { border-top: none; margin-top: 0; padding-top: 4px; }
+  .tier-label .tier-desc {
+    font-weight: 500;
+    color: var(--ink-mute);
+    text-transform: none;
+    letter-spacing: 0;
+    margin-left: 8px;
+  }
+
+  /* ============ Page 2: SEP Coverage ============ */
+  .sep-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+  .sep-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px 18px 14px;
+    transition: all 0.15s;
+    cursor: pointer;
+  }
+  .sep-card:hover {
+    border-color: var(--magenta);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow);
+  }
+  .sep-card.coverage-high { border-left: 4px solid var(--magenta); }
+  .sep-card.coverage-mid { border-left: 4px solid var(--gold); }
+  .sep-card.coverage-low { border-left: 4px solid #c0c0c0; }
+  .sep-card .sep-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 8px;
+  }
+  .sep-card .sep-num {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--ink-mute);
+    letter-spacing: 1px;
+  }
+  .sep-card .sep-count {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--teal);
+    letter-spacing: -0.5px;
+    line-height: 1;
+  }
+  .sep-card .sep-count .of {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--ink-mute);
+    margin-left: 2px;
+  }
+  .sep-card .sep-name {
+    font-size: 14.5px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 6px;
+    line-height: 1.3;
+  }
+  .sep-card .sep-pct-bar {
+    height: 4px;
+    background: #f1f1f1;
+    border-radius: 2px;
+    overflow: hidden;
+    margin-bottom: 8px;
+  }
+  .sep-card .sep-pct-fill {
+    height: 100%;
+    background: var(--teal);
+    border-radius: 2px;
+  }
+  .sep-card.coverage-high .sep-pct-fill { background: var(--magenta); }
+  .sep-card.coverage-mid .sep-pct-fill { background: var(--gold); }
+  .sep-card.coverage-low .sep-pct-fill { background: #b8b8b8; }
+  .sep-card .sep-pct-label {
+    font-size: 11px;
+    color: var(--ink-mute);
+    font-weight: 600;
+  }
+  .matrix-wrap {
+    overflow-x: auto;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--card);
+    box-shadow: var(--shadow);
+    margin-bottom: 24px;
+  }
+  table.matrix {
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 13px;
+  }
+  table.matrix th {
+    background: var(--teal);
+    color: white;
+    padding: 10px 8px;
+    font-weight: 600;
+    font-size: 11px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    text-align: center;
+    border-right: 1px solid rgba(255,255,255,0.12);
+    position: sticky;
+    top: 0;
+    z-index: 2;
+  }
+  table.matrix th.lesson-col {
+    text-align: left;
+    padding-left: 16px;
+    min-width: 220px;
+  }
+  table.matrix th.sep-col { width: 70px; }
+  table.matrix th.sep-col .sep-th-num {
+    display: block;
+    font-size: 14px;
+    margin-bottom: 2px;
+  }
+  table.matrix th.sep-col .sep-th-name {
+    font-size: 9px;
+    font-weight: 500;
+    opacity: 0.85;
+    line-height: 1.2;
+    text-transform: none;
+    letter-spacing: 0.2px;
+  }
+  table.matrix tr.cat-divider td {
+    background: #f1f1f1;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    padding: 8px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  table.matrix tr.cat-divider td .cat-dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 8px;
+    vertical-align: middle;
+  }
+  table.matrix td {
+    padding: 10px 8px;
+    border-bottom: 1px solid #f0f0f0;
+    border-right: 1px solid #f5f5f5;
+    text-align: center;
+  }
+  table.matrix td.lesson-cell {
+    text-align: left;
+    padding-left: 16px;
+    font-weight: 500;
+    color: var(--ink);
+    font-size: 13.5px;
+  }
+  table.matrix tr:hover td:not(.cat-divider) { background: var(--teal-light); }
+  .dot {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    cursor: default;
+    transition: transform 0.1s;
+    border: 1px solid transparent;
+  }
+  .dot.hit {
+    background: var(--magenta);
+    border-color: var(--magenta-dark);
+    cursor: help;
+  }
+  .dot.miss {
+    background: transparent;
+    border: 1px dashed #d8d8d8;
+  }
+  .dot.hit:hover { transform: scale(1.3); }
+  .sep-desc {
+    background: var(--gold-light);
+    padding: 12px 16px;
+    border-radius: 6px;
+    font-size: 13.5px;
+    color: var(--ink-soft);
+    margin-bottom: 18px;
+    border-left: 3px solid var(--gold);
+  }
+  .lesson-evidence {
+    border-bottom: 1px solid #f0f0f0;
+    padding: 12px 0;
+  }
+  .lesson-evidence:last-child { border-bottom: none; }
+  .lesson-evidence .ev-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 4px;
+  }
+  .lesson-evidence .cat-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .lesson-evidence .ev-title {
+    font-weight: 600;
+    color: var(--ink);
+    font-size: 14.5px;
+  }
+  .lesson-evidence .ev-reason {
+    font-size: 13.5px;
+    color: var(--ink-soft);
+    padding-left: 22px;
+    font-style: italic;
+  }
+
+  /* ============ Page 3: Concept Gaps ============ */
+  .gap-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .gap-col {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .gap-col-head {
+    padding: 14px 20px;
+    color: white;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .gap-col-head.covered { background: var(--green); }
+  .gap-col-head.missing { background: var(--magenta); }
+  .gap-col-head .count-badge {
+    background: rgba(255,255,255,0.2);
+    padding: 2px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+  }
+  .gap-list {
+    padding: 8px 0;
+  }
+  .gap-item {
+    padding: 12px 20px;
+    border-bottom: 1px solid #f4f4f4;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .gap-item:last-child { border-bottom: none; }
+  .gap-item .check {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    color: white;
+  }
+  .gap-item.has .check { background: var(--green); }
+  .gap-item.miss .check { background: var(--magenta); }
+  .gap-item .gap-name { color: var(--ink); }
+  .gap-item.miss .gap-name { color: var(--ink-soft); }
+
+  /* ============ Page 4: Lesson Neighbors ============ */
+  .neighbor-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+    gap: 14px;
+    margin-bottom: 24px;
+  }
+  .neighbor-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 18px;
+    box-shadow: var(--shadow);
+  }
+  .neighbor-card .nh-source {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+    border-bottom: 1px dashed var(--border);
+  }
+  .neighbor-card .nh-source .cat-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+  }
+  .neighbor-card .nh-source .nh-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--ink);
+  }
+  .neighbor-card .nh-arrow {
+    font-size: 11px;
+    color: var(--ink-mute);
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .neighbor-card .nh-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .neighbor-card .nh-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    background: var(--teal-light);
+    border-radius: 6px;
+    font-size: 13.5px;
+  }
+  .neighbor-card .nh-item .cat-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .neighbor-card .nh-item .name { flex: 1; color: var(--ink); font-weight: 500; }
+  .neighbor-card .nh-item .score {
+    font-size: 11px;
+    color: var(--teal-dark);
+    font-weight: 700;
+    background: white;
+    padding: 2px 8px;
+    border-radius: 10px;
+  }
+
+  /* ============ Page 5: Pillar Audit ============ */
+  .pillar-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin-bottom: 24px;
+  }
+  .pillar-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 22px 24px;
+    box-shadow: var(--shadow);
+    border-top: 5px solid var(--teal);
+  }
+  .pillar-card.health-strong { border-top-color: var(--green); }
+  .pillar-card.health-mid { border-top-color: var(--gold); }
+  .pillar-card.health-weak { border-top-color: var(--magenta); }
+  .pillar-card .p-name {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 4px;
+    letter-spacing: -0.2px;
+  }
+  .pillar-card .p-tagline {
+    font-size: 12px;
+    color: var(--ink-mute);
+    font-style: italic;
+    margin-bottom: 18px;
+  }
+  .pillar-card .p-num {
+    font-size: 38px;
+    font-weight: 800;
+    line-height: 1;
+    margin-bottom: 4px;
+    letter-spacing: -1px;
+  }
+  .pillar-card.health-strong .p-num { color: var(--green); }
+  .pillar-card.health-mid .p-num { color: var(--gold); }
+  .pillar-card.health-weak .p-num { color: var(--magenta); }
+  .pillar-card .p-of {
+    font-size: 14px;
+    color: var(--ink-mute);
+    margin-bottom: 14px;
+  }
+  .pillar-card .p-bar {
+    height: 8px;
+    background: #f1f1f1;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 14px;
+  }
+  .pillar-card .p-fill {
+    height: 100%;
+    border-radius: 4px;
+  }
+  .pillar-card.health-strong .p-fill { background: var(--green); }
+  .pillar-card.health-mid .p-fill { background: var(--gold); }
+  .pillar-card.health-weak .p-fill { background: var(--magenta); }
+  .pillar-card .p-status {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+  .pillar-card.health-strong .p-status { color: var(--green); }
+  .pillar-card.health-mid .p-status { color: var(--gold); }
+  .pillar-card.health-weak .p-status { color: var(--magenta-dark); }
+  .pillar-card .p-note {
+    font-size: 13px;
+    color: var(--ink-soft);
+    line-height: 1.5;
+  }
+
+  /* Loop diagram for threshold framework */
+  .loop-card {
+    background: linear-gradient(135deg, #fafdfd 0%, #f0f7f8 100%);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 24px 28px;
+    margin-bottom: 24px;
+    box-shadow: var(--shadow);
+  }
+  .loop-card .loop-title {
+    font-size: 13px;
+    color: var(--teal);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    margin-bottom: 12px;
+  }
+  .loop-card .loop-desc {
+    font-size: 14px;
+    color: var(--ink-soft);
+    margin-bottom: 18px;
+    font-style: italic;
+  }
+  .loop-stages {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0;
+    align-items: center;
+    justify-content: center;
+  }
+  .loop-stage {
+    background: white;
+    border: 2px solid var(--teal);
+    color: var(--teal);
+    padding: 10px 16px;
+    border-radius: 22px;
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .loop-arrow {
+    color: var(--magenta);
+    font-size: 16px;
+    margin: 0 8px;
+    font-weight: 700;
+  }
+
+  /* Tooltip */
+  .tip {
+    position: fixed;
+    z-index: 100;
+    background: #222;
+    color: white;
+    padding: 10px 14px;
+    border-radius: 6px;
+    font-size: 12.5px;
+    line-height: 1.45;
+    max-width: 300px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.15s;
+  }
+  .tip.show { opacity: 1; }
+  .tip .tip-label {
+    font-size: 10px;
+    color: #c5d6da;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+
+  @media (max-width: 1100px) {
+    .nav { width: 220px; }
+    .page-header, .page-body { padding-left: 28px; padding-right: 28px; }
+  }
+  @media (max-width: 820px) {
+    .app { flex-direction: column; }
+    .nav { width: 100%; height: auto; position: relative; }
+    .nav { display: none; } /* could be a drawer toggle in future */
+    .stats { grid-template-columns: repeat(2, 1fr); }
+    .gap-grid { grid-template-columns: 1fr; }
+    .pillar-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ===== Left Nav ===== -->
+  <nav class="nav">
+    <div class="nav-brand">
+      <div class="logo">TETC</div>
+      <div class="sub">Data Dashboard</div>
+    </div>
+
+    <div class="nav-section">
+      <div class="section-label">9th Grade Year</div>
+      <div class="nav-item active" data-page="overview">
+        <span class="num">·</span>
+        <span>Overview</span>
+      </div>
+      <div class="nav-item" data-page="concepts">
+        <span class="num">1</span>
+        <span>Concept Frequency</span>
+      </div>
+      <div class="nav-item" data-page="gaps">
+        <span class="num">2</span>
+        <span>Concept Gaps</span>
+      </div>
+      <div class="nav-item" data-page="seps">
+        <span class="num">3</span>
+        <span>NGSS Practices</span>
+      </div>
+      <div class="nav-item" data-page="neighbors">
+        <span class="num">4</span>
+        <span>Lesson Neighbors</span>
+      </div>
+      <div class="nav-item" data-page="pillars">
+        <span class="num">5</span>
+        <span>Threshold Pillars</span>
+      </div>
+    </div>
+
+    <div class="nav-footer">
+      Built from 23 lesson tags across the 9th grade TETC year. Click a section to explore.
+    </div>
+  </nav>
+
+  <!-- ===== Main ===== -->
+  <main class="main">
+
+    <!-- ============ OVERVIEW ============ -->
+    <div class="page active" id="page-overview">
+      <header class="page-header">
+        <div class="crumb">Dashboard Overview</div>
+        <h1>9th Grade Year, by the Numbers</h1>
+        <p class="desc">Five lenses on the year's lesson design. Each section is one analysis — designed to be read on its own or as part of the whole. Use the left nav to jump.</p>
+      </header>
+      <div class="page-body">
+
+        <div class="stats">
+          <div class="stat"><div class="num">23</div><div class="label">Lessons in Year</div></div>
+          <div class="stat"><div class="num">6</div><div class="label">Lesson Categories</div></div>
+          <div class="stat"><div class="num">34</div><div class="label">Concepts Touched</div></div>
+          <div class="stat"><div class="num">75+</div><div class="label">Distinct Skills</div></div>
+        </div>
+
+        <div class="section-title">What's in This Dashboard</div>
+
+        <div class="chart-card">
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+
+            <div class="overview-tile" data-jump="concepts" style="cursor:pointer; padding: 18px; border: 1px solid var(--border); border-radius: 8px; transition: all 0.15s;">
+              <div style="font-size: 11px; font-weight: 700; color: var(--magenta); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 8px;">Section 1</div>
+              <div style="font-size: 17px; font-weight: 700; color: var(--ink); margin-bottom: 6px;">Concept Frequency</div>
+              <div style="font-size: 13.5px; color: var(--ink-soft); line-height: 1.5;">Which STEM concepts the year actually emphasizes — counted from lesson tags, not assumed.</div>
+            </div>
+
+            <div class="overview-tile" data-jump="gaps" style="cursor:pointer; padding: 18px; border: 1px solid var(--border); border-radius: 8px; transition: all 0.15s;">
+              <div style="font-size: 11px; font-weight: 700; color: var(--magenta); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 8px;">Section 2</div>
+              <div style="font-size: 17px; font-weight: 700; color: var(--ink); margin-bottom: 6px;">Concept Coverage Gaps</div>
+              <div style="font-size: 13.5px; color: var(--ink-soft); line-height: 1.5;">Standard 9th-grade STEM concepts checked against the year. What's covered, what's not.</div>
+            </div>
+
+            <div class="overview-tile" data-jump="seps" style="cursor:pointer; padding: 18px; border: 1px solid var(--border); border-radius: 8px; transition: all 0.15s;">
+              <div style="font-size: 11px; font-weight: 700; color: var(--magenta); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 8px;">Section 3</div>
+              <div style="font-size: 17px; font-weight: 700; color: var(--ink); margin-bottom: 6px;">NGSS Engineering Practices</div>
+              <div style="font-size: 13.5px; color: var(--ink-soft); line-height: 1.5;">Every lesson mapped to the 8 NGSS Science &amp; Engineering Practices, with reasoning visible.</div>
+            </div>
+
+            <div class="overview-tile" data-jump="neighbors" style="cursor:pointer; padding: 18px; border: 1px solid var(--border); border-radius: 8px; transition: all 0.15s;">
+              <div style="font-size: 11px; font-weight: 700; color: var(--magenta); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 8px;">Section 4</div>
+              <div style="font-size: 17px; font-weight: 700; color: var(--ink); margin-bottom: 6px;">Lesson Neighbors</div>
+              <div style="font-size: 13.5px; color: var(--ink-soft); line-height: 1.5;">For every lesson, the 3 most-similar other lessons by concept overlap. Sequencing and bridging insight.</div>
+            </div>
+
+            <div class="overview-tile" data-jump="pillars" style="cursor:pointer; padding: 18px; border: 1px solid var(--border); border-radius: 8px; transition: all 0.15s; grid-column: span 2;">
+              <div style="font-size: 11px; font-weight: 700; color: var(--magenta); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 8px;">Section 5</div>
+              <div style="font-size: 17px; font-weight: 700; color: var(--ink); margin-bottom: 6px;">Threshold Learning Pillar Audit</div>
+              <div style="font-size: 13.5px; color: var(--ink-soft); line-height: 1.5;">An honest look at how well the year actually lives the framework: Design Thinking, Constructivism, Conversational AI.</div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="interp">
+          <div class="label">A Note on This Dashboard</div>
+          <p>This is a <strong>snapshot of the 9th grade year as it exists today</strong>, not as you remember it or planned it. Every analysis is built from the same lesson dataset — 23 lessons, each tagged with skills, concepts, design-process stages, and pillar alignment.</p>
+          <p>Where I've used judgment (especially in the SEP page and the pillar audit), the reasoning is visible in the data. Disagree with a tag? Tell me which one and I'll change it.</p>
+          <p>This dashboard is a <strong>thinking tool, not a report card</strong>. The most interesting findings are the surprises — the concept that was supposed to anchor the year but doesn't, the pillar that's missing, the lesson doing the most work. Those are the places worth leaning into.</p>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ============ CONCEPTS ============ -->
+    <div class="page" id="page-concepts">
+      <header class="page-header">
+        <div class="crumb">Section 1 of 5</div>
+        <h1>Concept Frequency</h1>
+        <p class="desc">Which STEM concepts actually show up most across the 9th grade year — counted from lesson tags, not assumed from category names.</p>
+      </header>
+      <div class="page-body">
+
+        <div class="stats">
+          <div class="stat"><div class="num">23</div><div class="label">Lessons Analyzed</div></div>
+          <div class="stat"><div class="num">34</div><div class="label">Unique Concepts</div></div>
+          <div class="stat"><div class="num" id="cf-tags">—</div><div class="label">Total Concept Tags</div></div>
+          <div class="stat"><div class="num" id="cf-avg">—</div><div class="label">Avg Concepts / Lesson</div></div>
+        </div>
+
+        <div class="legend">
+          <span style="font-size:11px; color:var(--ink-mute); font-weight:700; letter-spacing:1.2px; text-transform:uppercase;">Lesson categories</span>
+          <span class="legend-item"><span class="cat-dot cat-physics"></span>Physics &amp; Motion</span>
+          <span class="legend-item"><span class="cat-dot cat-structures"></span>Structures &amp; Energy</span>
+          <span class="legend-item"><span class="cat-dot cat-robotics"></span>Robotics</span>
+          <span class="legend-item"><span class="cat-dot cat-chem"></span>Electrical &amp; Chemistry</span>
+          <span class="legend-item"><span class="cat-dot cat-laser"></span>Laser Fabrication</span>
+          <span class="legend-item"><span class="cat-dot cat-cad"></span>CAD &amp; 3D Printing</span>
+        </div>
+
+        <div class="section-title">All 34 Concepts · Click any concept to see lessons</div>
+        <div class="chart-card">
+          <div class="bar-chart" id="cf-chart"></div>
+          <div class="hint">Click any concept to see exactly which lessons cover it ↓</div>
+        </div>
+
+        <div class="detail-panel">
+          <div class="panel-header">
+            <h3 id="cf-detail-title">Click a concept above</h3>
+            <div class="meta" id="cf-detail-meta"></div>
+          </div>
+          <div class="panel-body" id="cf-detail-body">
+            <div class="empty">Select a concept from the chart to see which lessons cover it.</div>
+          </div>
+        </div>
+
+        <div class="interp">
+          <div class="label">What This Tells Us</div>
+          <p>The year is <strong>more balanced than fixated.</strong> No single concept dominates — the most-covered concept ("Cause and Effect") still only appears in about 22% of lessons. That's the signature of a year designed organically, with each lesson reaching for whichever concept fits the build, instead of returning to one drumbeat.</p>
+          <p>The shape of the data tells a story in three layers. There's a small <strong>core of recurring concepts</strong> (the top tier), a <strong>middle band</strong> of concepts that anchor a category but don't carry across the whole year, and a <strong>long tail</strong> of concepts that show up in only one lesson — sometimes by design, sometimes by accident.</p>
+          <div class="findings">
+            <div class="finding">
+              <div class="marker">!</div>
+              <div><strong>Iteration is undercounted in the tags.</strong> It's flagged in 4 lessons but lives in many more — the cross-cutting skills sidebar in the worksheet captures this better. The data is honest about what was tagged, not what was experienced.</div>
+            </div>
+            <div class="finding">
+              <div class="marker">?</div>
+              <div><strong>Data Analysis and Graphing dropped to 1–2 lessons</strong> after Proof: Acceleration was removed. The math/data backbone of the year is now thinner than it looks — worth knowing if you want students to feel competent with data later.</div>
+            </div>
+            <div class="finding">
+              <div class="marker">+</div>
+              <div><strong>Long-tail concepts are revisit candidates.</strong> Phase Change, Fluid Dynamics, Sensors, and Circuits each anchor one lesson — perfect targets for a 10th grade lesson that calls back to a 9th grade experience.</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ============ GAPS ============ -->
+    <div class="page" id="page-gaps">
+      <header class="page-header">
+        <div class="crumb">Section 2 of 5</div>
+        <h1>Concept Coverage Gaps</h1>
+        <p class="desc">Standard 9th grade STEM concepts checked against the lessons. Green is covered. Magenta is missing — either deliberate or a candidate to add.</p>
+        <div class="source">Standard concept list drawn from typical 9th grade Texas IPC + Algebra I content + foundational engineering.</div>
+      </header>
+      <div class="page-body">
+
+        <div class="stats">
+          <div class="stat"><div class="num good" id="gap-covered">—</div><div class="label">Concepts Covered</div></div>
+          <div class="stat"><div class="num warn" id="gap-missing">—</div><div class="label">Concepts Missing</div></div>
+          <div class="stat"><div class="num" id="gap-total">—</div><div class="label">Standard Concepts Checked</div></div>
+          <div class="stat"><div class="num" id="gap-pct">—</div><div class="label">Coverage Rate</div></div>
+        </div>
+
+        <div class="gap-grid">
+          <div class="gap-col">
+            <div class="gap-col-head covered">
+              <span>Covered in TETC 9th</span>
+              <span class="count-badge" id="gap-covered-count">—</span>
+            </div>
+            <div class="gap-list" id="gap-covered-list"></div>
+          </div>
+          <div class="gap-col">
+            <div class="gap-col-head missing">
+              <span>Not in 9th Grade Year</span>
+              <span class="count-badge" id="gap-missing-count">—</span>
+            </div>
+            <div class="gap-list" id="gap-missing-list"></div>
+          </div>
+        </div>
+
+        <div class="interp">
+          <div class="label">What This Tells Us</div>
+          <p>The TETC 9th grade year is <strong>strong on engineering and applied physics, lighter on classical chemistry, and almost silent on classical computer science fundamentals.</strong> That's not a failure — it's a curriculum choice. But it's worth seeing on paper.</p>
+          <p>Some of the missing concepts genuinely belong in IPC or chemistry, not engineering — pH, stoichiometry, periodic table, atomic structure. Others (Newton's Three Laws, Ohm's Law, conservation of momentum) are physics-engineering bridges that show up implicitly in the lessons but never as named concepts students could recognize on a test.</p>
+          <div class="findings">
+            <div class="finding">
+              <div class="marker">!</div>
+              <div><strong>Newton's Laws aren't named.</strong> Students experience Newton's 2nd law every time they tune a catapult and 3rd law every time the JudoBot flips back. Naming the law during the lesson would cost nothing and add transferable vocabulary.</div>
+            </div>
+            <div class="finding">
+              <div class="marker">~</div>
+              <div><strong>The CS coverage is real but narrow.</strong> Programming logic shows up in Freeze Tag and Bucky Basketball, but loops, conditionals, and variables aren't explicit. Worth being aware of if students will face a CS course in 10th or 11th.</div>
+            </div>
+            <div class="finding">
+              <div class="marker">+</div>
+              <div><strong>Many "missing" concepts could be added with one line of teacher framing</strong> — not a new lesson. "This is conservation of energy" during the rubber band car. "This is heat transfer" during the LN ice cream. The lesson stays. The vocabulary lands.</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ============ SEPS ============ -->
+    <div class="page" id="page-seps">
+      <header class="page-header">
+        <div class="crumb">Section 3 of 5 · Standards Alignment</div>
+        <h1>NGSS Engineering Practices Coverage</h1>
+        <p class="desc">Mapping every 9th grade lesson against the eight Science &amp; Engineering Practices from the Next Generation Science Standards. Each tag has a short reasoning attached.</p>
+        <div class="source">Source: NGSS Appendix F · Achieve, Inc. on behalf of 26 NGSS Lead States, 2013</div>
+      </header>
+      <div class="page-body">
+
+        <div class="stats">
+          <div class="stat"><div class="num">23</div><div class="label">Lessons Analyzed</div></div>
+          <div class="stat"><div class="num">8</div><div class="label">NGSS Practices</div></div>
+          <div class="stat"><div class="num" id="sep-tags">—</div><div class="label">Total Tags Made</div></div>
+          <div class="stat"><div class="num" id="sep-avg">—</div><div class="label">Avg Practices / Lesson</div></div>
+        </div>
+
+        <div class="section-title">Coverage by Practice · Click any card</div>
+        <div class="sep-grid" id="sep-grid"></div>
+
+        <div class="detail-panel">
+          <div class="panel-header">
+            <h3 id="sep-detail-title">Click any practice above</h3>
+            <div class="meta" id="sep-detail-meta"></div>
+          </div>
+          <div class="panel-body" id="sep-detail-body">
+            <div class="empty">Select an SEP card to see which lessons cover it and why.</div>
+          </div>
+        </div>
+
+        <div class="section-title">Full Coverage Matrix · Lessons × Practices</div>
+        <div class="hint">Hover any filled circle for the reasoning behind that tag. Empty circles show the practice isn't a meaningful focus of that lesson.</div>
+
+        <div class="legend">
+          <span style="font-size:11px; color:var(--ink-mute); font-weight:700; letter-spacing:1.2px; text-transform:uppercase;">Lesson categories</span>
+          <span class="legend-item"><span class="cat-dot cat-physics"></span>Physics &amp; Motion</span>
+          <span class="legend-item"><span class="cat-dot cat-structures"></span>Structures &amp; Energy</span>
+          <span class="legend-item"><span class="cat-dot cat-robotics"></span>Robotics</span>
+          <span class="legend-item"><span class="cat-dot cat-chem"></span>Electrical &amp; Chemistry</span>
+          <span class="legend-item"><span class="cat-dot cat-laser"></span>Laser Fabrication</span>
+          <span class="legend-item"><span class="cat-dot cat-cad"></span>CAD &amp; 3D Printing</span>
+        </div>
+
+        <div class="matrix-wrap">
+          <table class="matrix" id="sep-matrix"></table>
+        </div>
+
+        <div class="interp">
+          <div class="label">What This Tells Us</div>
+          <p>The TETC 9th grade year leans heavily on the <strong>build-and-test core of engineering practice</strong> — Planning &amp; Carrying Out Investigations (SEP 3), Constructing Explanations / Designing Solutions (SEP 6), and Developing &amp; Using Models (SEP 2) all show up in the majority of lessons. That's exactly what you'd expect from a hands-on program built around constructivism and failure-as-data.</p>
+          <p>The practices that show up <strong>least</strong> are also predictable: Argument from Evidence (SEP 7) and Obtaining/Communicating Information (SEP 8) almost never appear in current lesson tags — not because they're absent from the room, but because they're rarely the explicit focus of a lesson.</p>
+          <div class="findings">
+            <div class="finding">
+              <div class="marker">!</div>
+              <div><strong>SEP 7 and SEP 8 are coverage gaps.</strong> A single capstone lesson where students defend a design choice in writing or pitch a redesign to peers would close both gaps at once — and would map cleanly to TEKS EDP I requirements for written/oral technical communication.</div>
+            </div>
+            <div class="finding">
+              <div class="marker">~</div>
+              <div><strong>SEP 5 (Mathematics &amp; Computational Thinking) thinned out</strong> after Proof: Acceleration was removed. Currently anchored by Velocity, Catapult, Hydraulics, and Bucky Basketball.</div>
+            </div>
+            <div class="finding">
+              <div class="marker">+</div>
+              <div><strong>Robo Gripper hits the most practices in a single lesson</strong> (6 of 8). It's doing a lot of work — a strong candidate for the lesson architecture pattern you might want to clone elsewhere.</div>
+            </div>
+            <div class="finding">
+              <div class="marker">i</div>
+              <div><strong>SEP 1 (Asking Questions / Defining Problems) is light by design.</strong> Most TETC lessons present the problem rather than asking students to define it. A scaffolding choice — but a path toward more student-driven lessons later.</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ============ NEIGHBORS ============ -->
+    <div class="page" id="page-neighbors">
+      <header class="page-header">
+        <div class="crumb">Section 4 of 5</div>
+        <h1>Lesson Neighbors</h1>
+        <p class="desc">For every lesson, its three nearest neighbors by concept overlap. A "neighbor" shares concepts even if it's in a different category — these are the bridges across your year.</p>
+      </header>
+      <div class="page-body">
+
+        <div class="stats">
+          <div class="stat"><div class="num">23</div><div class="label">Lessons</div></div>
+          <div class="stat"><div class="num" id="nh-bridges">—</div><div class="label">Cross-Category Bridges</div></div>
+          <div class="stat"><div class="num">3</div><div class="label">Neighbors per Lesson</div></div>
+          <div class="stat"><div class="num" id="nh-strongest">—</div><div class="label">Strongest Pair (Jaccard)</div></div>
+        </div>
+
+        <div class="legend">
+          <span style="font-size:11px; color:var(--ink-mute); font-weight:700; letter-spacing:1.2px; text-transform:uppercase;">Lesson categories</span>
+          <span class="legend-item"><span class="cat-dot cat-physics"></span>Physics &amp; Motion</span>
+          <span class="legend-item"><span class="cat-dot cat-structures"></span>Structures &amp; Energy</span>
+          <span class="legend-item"><span class="cat-dot cat-robotics"></span>Robotics</span>
+          <span class="legend-item"><span class="cat-dot cat-chem"></span>Electrical &amp; Chemistry</span>
+          <span class="legend-item"><span class="cat-dot cat-laser"></span>Laser Fabrication</span>
+          <span class="legend-item"><span class="cat-dot cat-cad"></span>CAD &amp; 3D Printing</span>
+        </div>
+
+        <div class="neighbor-grid" id="nh-grid"></div>
+
+        <div class="interp">
+          <div class="label">What This Tells Us</div>
+          <p>This view is most useful for two questions: <strong>"if a kid loved this lesson, what should they try next?"</strong> and <strong>"which lessons could be sequenced together to compound learning?"</strong></p>
+          <p>The strongest neighbors are usually within the same category — that's expected and confirms the categories make sense. The interesting cases are the <strong>cross-category bridges</strong>: a CAD lesson that pairs with a physics lesson, a chemistry lesson that overlaps with fabrication. These are places where students could be told explicitly: "this is the same idea you saw in X."</p>
+          <div class="findings">
+            <div class="finding">
+              <div class="marker">+</div>
+              <div><strong>Bug Bots is a structural bridge.</strong> Its top neighbors include both Bucky Basketball (robotics) and Fidget (CAD) because all three involve iterating a physical design with motion. It could be the connective tissue linking three different parts of the year.</div>
+            </div>
+            <div class="finding">
+              <div class="marker">~</div>
+              <div><strong>Lessons with very low neighbor scores are isolated.</strong> They might be intentionally novel, or they might be missing connection points to the rest of the year. Worth knowing which is which.</div>
+            </div>
+            <div class="finding">
+              <div class="marker">i</div>
+              <div><strong>Sequencing intelligence:</strong> the strongest neighbors are good candidates for back-to-back ordering or even fused into a longer arc. The weakest neighbors are good for spacing apart in time so students get variety.</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ============ PILLARS ============ -->
+    <div class="page" id="page-pillars">
+      <header class="page-header">
+        <div class="crumb">Section 5 of 5 · Framework Audit</div>
+        <h1>Threshold Learning Pillar Audit</h1>
+        <p class="desc">An honest look at how well the 9th grade year actually lives the framework you wrote. Three pillars, counted across 23 lessons.</p>
+      </header>
+      <div class="page-body">
+
+        <div class="loop-card">
+          <div class="loop-title">The Threshold Learning Loop</div>
+          <div class="loop-desc">"Where the tool disappears and the idea is what's left."</div>
+          <div class="loop-stages">
+            <div class="loop-stage">Care</div><span class="loop-arrow">→</span>
+            <div class="loop-stage">Define</div><span class="loop-arrow">→</span>
+            <div class="loop-stage">Converse</div><span class="loop-arrow">→</span>
+            <div class="loop-stage">Build</div><span class="loop-arrow">→</span>
+            <div class="loop-stage">Test</div><span class="loop-arrow">→</span>
+            <div class="loop-stage">Learn</div><span class="loop-arrow">↺</span>
+          </div>
+        </div>
+
+        <div class="section-title">Pillar Coverage Across the 9th Grade Year</div>
+
+        <div class="pillar-grid" id="pillar-grid"></div>
+
+        <div class="section-title">"The Tool Disappears" — Distribution Across Lessons</div>
+        <div class="chart-card">
+          <div id="td-chart"></div>
+          <div class="hint">Each lesson rated 1–5 on whether the tool is the lesson (1) or invisible (5). Higher scores mean the idea, not the tool, is what students take away.</div>
+        </div>
+
+        <div class="section-title">"Failure as Data" Coverage</div>
+        <div class="chart-card">
+          <div id="fail-chart"></div>
+        </div>
+
+        <div class="interp">
+          <div class="label">What This Tells Us</div>
+          <p>The framework you wrote and the year you actually built are <strong>aligned on two pillars and unbuilt on the third.</strong> Constructivism is everywhere. Design Thinking is in roughly half. Conversational AI is in zero lessons.</p>
+          <p>That's not a failure — it's an honest snapshot of where you are. The framework is aspirational by design, and the third pillar was added more recently than the first two. But seeing it on paper makes the gap concrete: "AI as thinking partner, not tool" is currently a stated value with no implementation, and that's the most actionable insight in this whole dashboard.</p>
+          <div class="findings">
+            <div class="finding">
+              <div class="marker">!</div>
+              <div><strong>The Conversational AI pillar is unbuilt.</strong> Not under-built — unbuilt. The most concrete way forward is one prototype lesson where students use AI as a thinking partner, with explicit framing. The Stakeholder Interview Simulator you started building (Dana Reyes) is exactly this category — finishing it would close the largest gap in your framework's implementation.</div>
+            </div>
+            <div class="finding">
+              <div class="marker">+</div>
+              <div><strong>The "tool disappears" rating is genuinely strong</strong> across most lessons. The exceptions (Intro to LightBurn, Do Nothing Machine, Dice) are appropriately tool-focused — a kid has to learn the tool before the tool can disappear. The rest of the year mostly clears the bar.</div>
+            </div>
+            <div class="finding">
+              <div class="marker">~</div>
+              <div><strong>Failure-as-data is broadly present</strong> but weakest in the chemistry strand. Rainbow Lab, Boba, and LN Ice Cream are observation-driven, not failure-driven — by lab design. Worth noting if you want to add a chem lesson where students iterate based on what didn't work.</div>
+            </div>
+            <div class="finding">
+              <div class="marker">i</div>
+              <div><strong>This is a framework integrity check, not a grade.</strong> The point is to see where the year matches the framework and where it diverges — both can be intentional. The diverging places are just decisions waiting to be made consciously.</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+
+</div>
+
+<div class="tip" id="tip"></div>
+
+<script>
+// ===== Lesson data =====
+const LESSONS = [
+  { id: "velocity", title: "Proof: Velocity", category: "Physics & Motion", catKey: "physics",
+    concepts: ["Motion / Kinematics", "Data Analysis", "Ratio Reasoning", "Graphing", "Modeling"],
+    pillars: ["Constructivism"], toolDisappears: 5, failureAsData: true,
+    sepTags: { sep2:"Builds position-time graph as a model of motion", sep3:"Plans timed trial investigations", sep4:"Hand-builds graphs and reads slope", sep5:"Derives v = d/t from data" }},
+  { id: "truss", title: "Truss Bridge", category: "Structures, Machines & Energy", catKey: "structures",
+    concepts: ["Forces / Loads", "Geometry", "Materials Science", "Structural Design"],
+    pillars: ["Constructivism", "Design Thinking"], toolDisappears: 5, failureAsData: true,
+    sepTags: { sep1:"Defines load-bearing problem with constraints", sep2:"Truss as model of force distribution", sep3:"Tests bridge to failure under load", sep4:"Analyzes failure points", sep6:"Designs structure within constraints" }},
+  { id: "bugbots", title: "Bug Bots", category: "Structures, Machines & Energy", catKey: "structures",
+    concepts: ["Motion / Kinematics", "Materials Science", "Iteration"],
+    pillars: ["Design Thinking", "Constructivism"], toolDisappears: 5, failureAsData: true,
+    sepTags: { sep3:"Runs race trials and iterates designs", sep4:"Uses race results to drive redesign", sep6:"Designs bot to optimize speed" }},
+  { id: "rubberband", title: "Rubber Band Car", category: "Structures, Machines & Energy", catKey: "structures",
+    concepts: ["Energy Transfer", "Forces / Loads", "Iteration"],
+    pillars: ["Constructivism"], toolDisappears: 5, failureAsData: true,
+    sepTags: { sep3:"Tests distance and speed across iterations", sep4:"Compares results across builds", sep6:"Designs car for maximum energy transfer" }},
+  { id: "catapult", title: "Catapult", category: "Structures, Machines & Energy", catKey: "structures",
+    concepts: ["Energy Transfer", "Motion / Kinematics", "Data Analysis", "Experimental Design"],
+    pillars: ["Constructivism"], toolDisappears: 5, failureAsData: true,
+    sepTags: { sep3:"Designs fair tests, one variable at a time", sep4:"Averages trial data to compare", sep5:"Optimizes launch parameters using data", sep6:"Designs launcher to balance power and consistency" }},
+  { id: "hydraulic", title: "Hydraulic Machine (JudoBot)", category: "Structures, Machines & Energy", catKey: "structures",
+    concepts: ["Forces / Loads", "Fluid Dynamics", "Mechanical Advantage"],
+    pillars: ["Constructivism", "Design Thinking"], toolDisappears: 5, failureAsData: true,
+    sepTags: { sep1:"Defines flip/push challenge with constraints", sep2:"Hydraulic system as model of force/distance", sep3:"Tests 1:1 vs small-to-big syringes", sep5:"Reasons informally about pressure-force", sep6:"Designs flipper machine within constraints" }},
+  { id: "robosoccer", title: "RoboSoccer", category: "Robotics", catKey: "robotics",
+    concepts: ["Robotics Systems", "Spatial Reasoning", "Teamwork"],
+    pillars: ["Constructivism"], toolDisappears: 3, failureAsData: false,
+    sepTags: { sep6:"Operates designed system within game constraints" }},
+  { id: "freezetag", title: "Freeze Tag", category: "Robotics", catKey: "robotics",
+    concepts: ["Programming / Logic", "Sensors / Inputs", "Iteration", "Cause and Effect"],
+    pillars: ["Constructivism", "Design Thinking"], toolDisappears: 4, failureAsData: true,
+    sepTags: { sep1:"Defines what behavior the robot needs", sep2:"Code as a behavioral model", sep3:"Tests code, observes, refines", sep6:"Designs sensor + code solution" }},
+  { id: "buckyball", title: "Bucky Basketball", category: "Robotics", catKey: "robotics",
+    concepts: ["Motion / Kinematics", "Mechanical Advantage", "Programming / Logic", "Robotics Systems"],
+    pillars: ["Constructivism", "Design Thinking"], toolDisappears: 4, failureAsData: true,
+    sepTags: { sep3:"Tests launch parameters across many trials", sep4:"Tracks scoring data to tune", sep5:"Calibrates angle, force, autonomous timing", sep6:"Designs integrated drivetrain + launcher" }},
+  { id: "electrical", title: "Intro to Electrical", category: "Electrical & Chemistry", catKey: "chem",
+    concepts: ["Electrical Flow", "Circuits", "Cause and Effect"],
+    pillars: ["Constructivism"], toolDisappears: 3, failureAsData: true,
+    sepTags: { sep2:"Circuit diagrams as models", sep3:"Tests circuits to see what works", sep6:"Builds and troubleshoots circuits" }},
+  { id: "rainbow", title: "Rainbow Lab", category: "Electrical & Chemistry", catKey: "chem",
+    concepts: ["Chemical Reactions", "Lab Procedures", "Cause and Effect"],
+    pillars: ["Constructivism"], toolDisappears: 2, failureAsData: false,
+    sepTags: { sep3:"Carries out lab procedures with controlled chemicals" }},
+  { id: "bleach", title: "Bleach T-Shirt", category: "Electrical & Chemistry", catKey: "chem",
+    concepts: ["Chemical Reactions", "Materials Science", "Design Planning"],
+    pillars: ["Design Thinking", "Constructivism"], toolDisappears: 4, failureAsData: true,
+    sepTags: { sep1:"Defines design problem before applying bleach", sep3:"Tests how bleach reacts with fabrics", sep6:"Designs and applies stencil for outcome" }},
+  { id: "lnicecream", title: "Liquid Nitrogen Ice Cream", category: "Electrical & Chemistry", catKey: "chem",
+    concepts: ["Phase Change", "Experimental Design", "Thermodynamics"],
+    pillars: ["Constructivism", "Design Thinking"], toolDisappears: 4, failureAsData: false,
+    sepTags: { sep3:"Designs single-variable experiment from base recipe", sep4:"Connects variable change to outcome", sep6:"Adjusts recipe for target result" }},
+  { id: "boba", title: "Boba (Spherification)", category: "Electrical & Chemistry", catKey: "chem",
+    concepts: ["Chemical Reactions", "Lab Procedures", "Material Transformation"],
+    pillars: ["Constructivism"], toolDisappears: 3, failureAsData: false,
+    sepTags: { sep3:"Carries out controlled chemical procedure with timing" }},
+  { id: "piezo", title: "Piezo Crystals", category: "Electrical & Chemistry", catKey: "chem",
+    concepts: ["Energy Transfer", "Electrical Flow", "Cause and Effect"],
+    pillars: ["Constructivism"], toolDisappears: 4, failureAsData: false,
+    sepTags: { sep2:"Crystal as physical model of energy conversion", sep3:"Investigates voltage output under pressure" }},
+  { id: "lightburn", title: "Intro to LightBurn", category: "Laser Fabrication", catKey: "laser",
+    concepts: ["Digital Fabrication", "Cause and Effect"],
+    pillars: ["Constructivism"], toolDisappears: 1, failureAsData: true,
+    sepTags: { sep3:"Tests parameter changes for cut/engrave results" }},
+  { id: "namebadge", title: "Name Badge & Keychain", category: "Laser Fabrication", catKey: "laser",
+    concepts: ["Digital Fabrication", "Design Planning"],
+    pillars: ["Design Thinking", "Constructivism"], toolDisappears: 3, failureAsData: false,
+    sepTags: { sep6:"Designs personal badge within constraints" }},
+  { id: "souvenir", title: "Laser Cut Souvenir", category: "Laser Fabrication", catKey: "laser",
+    concepts: ["Digital Fabrication", "Design Planning", "Materials Science"],
+    pillars: ["Design Thinking", "Constructivism"], toolDisappears: 4, failureAsData: true,
+    sepTags: { sep1:"Defines souvenir's purpose and audience", sep6:"Designs themed product within constraints" }},
+  { id: "puzzle", title: "Puzzle (Laser Cut)", category: "Laser Fabrication", catKey: "laser",
+    concepts: ["Digital Fabrication", "Geometry", "Tolerance"],
+    pillars: ["Constructivism", "Design Thinking"], toolDisappears: 4, failureAsData: true,
+    sepTags: { sep3:"Tests fit between parts and refines", sep6:"Designs interlocking joinery for tolerance" }},
+  { id: "dice", title: "Dice", category: "CAD & 3D Printing", catKey: "cad",
+    concepts: ["CAD / 3D Modeling", "Geometry", "Iteration"],
+    pillars: ["Constructivism"], toolDisappears: 2, failureAsData: true,
+    sepTags: { sep2:"3D model as representation of part", sep3:"Prints, checks, refines", sep6:"Designs printable die to spec" }},
+  { id: "fidget", title: "Fidget", category: "CAD & 3D Printing", catKey: "cad",
+    concepts: ["CAD / 3D Modeling", "Mechanical Advantage", "Tolerance"],
+    pillars: ["Constructivism", "Design Thinking"], toolDisappears: 3, failureAsData: true,
+    sepTags: { sep2:"CAD assembly as model of mechanism", sep3:"Tests fit and balance, refines", sep6:"Designs assembly with bearings and tolerances" }},
+  { id: "donothing", title: "Do Nothing Machine", category: "CAD & 3D Printing", catKey: "cad",
+    concepts: ["CAD / 3D Modeling", "Mechanism Analysis", "Constraints"],
+    pillars: ["Constructivism"], toolDisappears: 1, failureAsData: true,
+    sepTags: { sep1:"Defines mechanism's intended motion", sep2:"SolidWorks assembly as model", sep3:"Iterates until mates work", sep6:"Designs working multi-part machine" }},
+  { id: "robogripper", title: "Robo Gripper", category: "CAD & 3D Printing", catKey: "cad",
+    concepts: ["CAD / 3D Modeling", "Forces / Loads", "Mechanical Advantage", "Design Thinking"],
+    pillars: ["Design Thinking", "Constructivism"], toolDisappears: 4, failureAsData: true,
+    sepTags: { sep1:"Defines what objects gripper must hold", sep2:"Compares 3 gripper-type models", sep3:"Tests grippers against multiple objects", sep4:"Records which gripper works for which class", sep5:"Reasons about force through linkages", sep6:"Designs gripper for specific job" }},
+];
+
+const CATEGORIES = [
+  { name: "Physics & Motion", key: "physics" },
+  { name: "Structures, Machines & Energy", key: "structures" },
+  { name: "Robotics", key: "robotics" },
+  { name: "Electrical & Chemistry", key: "chem" },
+  { name: "Laser Fabrication", key: "laser" },
+  { name: "CAD & 3D Printing", key: "cad" },
+];
+
+// ===== Nav switching =====
+document.querySelectorAll(".nav-item").forEach(item => {
+  item.addEventListener("click", () => {
+    const page = item.dataset.page;
+    document.querySelectorAll(".nav-item").forEach(n => n.classList.remove("active"));
+    item.classList.add("active");
+    document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+    document.getElementById("page-" + page).classList.add("active");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+});
+
+// Overview tile jumps
+document.querySelectorAll(".overview-tile").forEach(tile => {
+  tile.addEventListener("click", () => {
+    const page = tile.dataset.jump;
+    document.querySelector(`.nav-item[data-page="${page}"]`).click();
+  });
+  tile.addEventListener("mouseenter", () => {
+    tile.style.borderColor = "var(--magenta)";
+    tile.style.transform = "translateY(-1px)";
+  });
+  tile.addEventListener("mouseleave", () => {
+    tile.style.borderColor = "var(--border)";
+    tile.style.transform = "";
+  });
+});
+
+// ============ PAGE 1: CONCEPT FREQUENCY ============
+(function() {
+  const counts = {};
+  LESSONS.forEach(l => l.concepts.forEach(c => counts[c] = (counts[c] || 0) + 1));
+  const sorted = Object.entries(counts)
+    .map(([concept, count]) => ({ concept, count, pct: count / LESSONS.length }))
+    .sort((a, b) => b.count - a.count || a.concept.localeCompare(b.concept));
+
+  const reverseMap = {};
+  LESSONS.forEach(l => l.concepts.forEach(c => {
+    if (!reverseMap[c]) reverseMap[c] = [];
+    reverseMap[c].push(l);
+  }));
+
+  const totalTags = LESSONS.reduce((s, l) => s + l.concepts.length, 0);
+  document.getElementById("cf-tags").textContent = totalTags;
+  document.getElementById("cf-avg").textContent = (totalTags / LESSONS.length).toFixed(1);
+
+  const chart = document.getElementById("cf-chart");
+  const max = sorted[0].count;
+  let lastTier = null;
+  sorted.forEach((item) => {
+    let tier;
+    if (item.count >= 4) tier = 1;
+    else if (item.count >= 2) tier = 2;
+    else tier = 3;
+    if (tier !== lastTier) {
+      const div = document.createElement("div");
+      div.className = "tier-label";
+      if (tier === 1) div.innerHTML = "Core concepts <span class='tier-desc'>· 4+ lessons</span>";
+      else if (tier === 2) div.innerHTML = "Recurring concepts <span class='tier-desc'>· 2–3 lessons</span>";
+      else div.innerHTML = "Long tail <span class='tier-desc'>· 1 lesson only</span>";
+      chart.appendChild(div);
+      lastTier = tier;
+    }
+    const row = document.createElement("div");
+    row.className = "bar-row tier-" + tier;
+    if (tier === 1) row.classList.add("top");
+    row.innerHTML =
+      '<div class="concept-name">' + item.concept + '</div>' +
+      '<div class="bar-track"><div class="bar-fill" style="width: ' + (item.count / max * 100) + '%"></div></div>' +
+      '<div class="count">' + item.count + '</div>';
+    row.addEventListener("click", () => {
+      document.getElementById("cf-detail-title").textContent = item.concept;
+      document.getElementById("cf-detail-meta").textContent =
+        item.count + " " + (item.count === 1 ? "lesson" : "lessons") + " · " + Math.round(item.pct * 100) + "%";
+      const lessons = reverseMap[item.concept] || [];
+      const body = document.getElementById("cf-detail-body");
+      if (lessons.length === 0) { body.innerHTML = '<div class="empty">None.</div>'; return; }
+      let h = '<div class="lesson-list">';
+      lessons.forEach(l => {
+        h += '<span class="lesson-pill"><span class="cat-dot cat-' + l.catKey + '"></span>' + l.title + '</span>';
+      });
+      h += '</div>';
+      body.innerHTML = h;
+    });
+    chart.appendChild(row);
+  });
+})();
+
+// ============ PAGE 2: GAPS ============
+(function() {
+  const present = new Set();
+  LESSONS.forEach(l => l.concepts.forEach(c => present.add(c)));
+
+  const standards = [
+    { name: "Newton's First Law (Inertia)", covered: false },
+    { name: "Newton's Second Law (F=ma)", covered: false },
+    { name: "Newton's Third Law (Action/Reaction)", covered: false },
+    { name: "Conservation of Energy", covered: present.has("Energy Transfer") },
+    { name: "Conservation of Momentum", covered: false },
+    { name: "Phase Change", covered: present.has("Phase Change") },
+    { name: "Heat Transfer (Conduction/Convection/Radiation)", covered: false },
+    { name: "Thermodynamics (basic)", covered: present.has("Thermodynamics") },
+    { name: "Wave Behavior / Frequency", covered: false },
+    { name: "Atoms / Periodic Table", covered: false },
+    { name: "Stoichiometry / Balancing", covered: false },
+    { name: "pH / Acid-Base Chemistry", covered: false },
+    { name: "Chemical Reactions (visible)", covered: present.has("Chemical Reactions") },
+    { name: "Materials Science", covered: present.has("Materials Science") },
+    { name: "Series vs Parallel Circuits", covered: present.has("Circuits") },
+    { name: "Ohm's Law (V=IR)", covered: false },
+    { name: "Electrical Flow / Voltage", covered: present.has("Electrical Flow") },
+    { name: "Energy Conversion (mechanical to electrical)", covered: present.has("Energy Transfer") },
+    { name: "Statistics / Mean & Variance", covered: false },
+    { name: "Linear Equations / Slope", covered: present.has("Graphing") || present.has("Modeling") },
+    { name: "Data Analysis / Graphing", covered: present.has("Data Analysis") },
+    { name: "Ratio & Proportion Reasoning", covered: present.has("Ratio Reasoning") },
+    { name: "Pythagorean / Trig for Vectors", covered: false },
+    { name: "Geometry (2D/3D)", covered: present.has("Geometry") },
+    { name: "Boolean Logic / Conditionals", covered: false },
+    { name: "Loops / Iteration in Code", covered: false },
+    { name: "Variables in Code", covered: false },
+    { name: "Programming Logic (general)", covered: present.has("Programming / Logic") },
+    { name: "Engineering Design Process", covered: present.has("Design Thinking") || present.has("Design Planning") },
+    { name: "Mechanical Advantage", covered: present.has("Mechanical Advantage") },
+    { name: "Forces & Loads", covered: present.has("Forces / Loads") },
+    { name: "Fluid Dynamics", covered: present.has("Fluid Dynamics") },
+  ];
+
+  const covered = standards.filter(s => s.covered);
+  const missing = standards.filter(s => !s.covered);
+
+  document.getElementById("gap-covered").textContent = covered.length;
+  document.getElementById("gap-missing").textContent = missing.length;
+  document.getElementById("gap-total").textContent = standards.length;
+  document.getElementById("gap-pct").textContent = Math.round(covered.length / standards.length * 100) + "%";
+  document.getElementById("gap-covered-count").textContent = covered.length;
+  document.getElementById("gap-missing-count").textContent = missing.length;
+
+  const cl = document.getElementById("gap-covered-list");
+  covered.forEach(s => {
+    const div = document.createElement("div");
+    div.className = "gap-item has";
+    div.innerHTML = '<span class="check">✓</span><span class="gap-name">' + s.name + '</span>';
+    cl.appendChild(div);
+  });
+
+  const ml = document.getElementById("gap-missing-list");
+  missing.forEach(s => {
+    const div = document.createElement("div");
+    div.className = "gap-item miss";
+    div.innerHTML = '<span class="check">×</span><span class="gap-name">' + s.name + '</span>';
+    ml.appendChild(div);
+  });
+})();
+
+// ============ PAGE 3: SEPS ============
+const SEPS = [
+  { key: "sep1", num: "SEP 1", name: "Asking Questions & Defining Problems", desc: "Engineering questions clarify problems, identify constraints, and define criteria for successful solutions." },
+  { key: "sep2", num: "SEP 2", name: "Developing & Using Models", desc: "Diagrams, replicas, mathematical representations, or simulations as tools for representing ideas." },
+  { key: "sep3", num: "SEP 3", name: "Planning & Carrying Out Investigations", desc: "Systematic investigations — clarifying variables, determining what counts as data, testing under different conditions." },
+  { key: "sep4", num: "SEP 4", name: "Analyzing & Interpreting Data", desc: "Organizing and interpreting data through tabulation, graphing, or statistical analysis to reveal patterns." },
+  { key: "sep5", num: "SEP 5", name: "Using Mathematics & Computational Thinking", desc: "Using mathematics and computation to represent variables, analyze data, or apply quantitative relationships." },
+  { key: "sep6", num: "SEP 6", name: "Constructing Explanations & Designing Solutions", desc: "Designing solutions that balance competing criteria of function, feasibility, cost, safety, and constraints." },
+  { key: "sep7", num: "SEP 7", name: "Engaging in Argument from Evidence", desc: "Using evidence to identify the best explanation, defend a design choice, or evaluate competing solutions." },
+  { key: "sep8", num: "SEP 8", name: "Obtaining, Evaluating & Communicating Information", desc: "Communicating findings clearly through tables, diagrams, written or oral form — and evaluating sources." },
+];
+
+(function() {
+  const sepCounts = {};
+  SEPS.forEach(s => sepCounts[s.key] = 0);
+  let totalTags = 0;
+  LESSONS.forEach(l => Object.keys(l.sepTags).forEach(k => { sepCounts[k]++; totalTags++; }));
+  document.getElementById("sep-tags").textContent = totalTags;
+  document.getElementById("sep-avg").textContent = (totalTags / LESSONS.length).toFixed(1);
+
+  const sepToLessons = {};
+  SEPS.forEach(s => sepToLessons[s.key] = []);
+  LESSONS.forEach(l => Object.entries(l.sepTags).forEach(([k, reason]) => {
+    sepToLessons[k].push({ ...l, reason });
+  }));
+
+  const grid = document.getElementById("sep-grid");
+  SEPS.forEach(sep => {
+    const count = sepCounts[sep.key];
+    const pct = count / LESSONS.length;
+    let coverage = "low";
+    if (pct >= 0.5) coverage = "high";
+    else if (pct >= 0.25) coverage = "mid";
+    const card = document.createElement("div");
+    card.className = "sep-card coverage-" + coverage;
+    card.innerHTML = `
+      <div class="sep-header">
+        <span class="sep-num">${sep.num}</span>
+        <span class="sep-count">${count}<span class="of">/${LESSONS.length}</span></span>
+      </div>
+      <div class="sep-name">${sep.name}</div>
+      <div class="sep-pct-bar"><div class="sep-pct-fill" style="width:${pct*100}%"></div></div>
+      <div class="sep-pct-label">${Math.round(pct*100)}% of lessons</div>
+    `;
+    card.addEventListener("click", () => {
+      const lessons = sepToLessons[sep.key];
+      document.getElementById("sep-detail-title").textContent = sep.num + " · " + sep.name;
+      document.getElementById("sep-detail-meta").textContent = lessons.length + (lessons.length === 1 ? " lesson" : " lessons") + " · " + Math.round(pct * 100) + "%";
+      const body = document.getElementById("sep-detail-body");
+      let h = `<div class="sep-desc"><strong>What this practice means:</strong> ${sep.desc}</div>`;
+      if (lessons.length === 0) { h += '<div class="empty">No lessons currently tag this practice.</div>'; }
+      else {
+        lessons.forEach(l => {
+          h += `<div class="lesson-evidence">
+            <div class="ev-head">
+              <span class="cat-dot cat-${l.catKey}"></span>
+              <span class="ev-title">${l.title}</span>
+            </div>
+            <div class="ev-reason">${l.reason}</div>
+          </div>`;
+        });
+      }
+      body.innerHTML = h;
+    });
+    grid.appendChild(card);
+  });
+
+  // Matrix
+  const matrix = document.getElementById("sep-matrix");
+  let html = '<thead><tr>';
+  html += '<th class="lesson-col">Lesson</th>';
+  SEPS.forEach(sep => {
+    html += `<th class="sep-col" title="${sep.name}"><span class="sep-th-num">${sep.num.replace("SEP ", "")}</span><span class="sep-th-name">${sep.name.split(" & ")[0]}</span></th>`;
+  });
+  html += '</tr></thead><tbody>';
+  CATEGORIES.forEach(cat => {
+    const lc = LESSONS.filter(l => l.catKey === cat.key);
+    if (lc.length === 0) return;
+    html += `<tr class="cat-divider"><td colspan="${SEPS.length + 1}"><span class="cat-dot cat-${cat.key}"></span>${cat.name}</td></tr>`;
+    lc.forEach(l => {
+      html += `<tr><td class="lesson-cell">${l.title}</td>`;
+      SEPS.forEach(sep => {
+        const reason = l.sepTags[sep.key];
+        if (reason) {
+          html += `<td><span class="dot hit" data-reason="${reason.replace(/"/g, '&quot;')}" data-sep="${sep.num}: ${sep.name}" data-lesson="${l.title}"></span></td>`;
+        } else {
+          html += `<td><span class="dot miss"></span></td>`;
+        }
+      });
+      html += '</tr>';
+    });
+  });
+  html += '</tbody>';
+  matrix.innerHTML = html;
+
+  // Tooltip
+  const tip = document.getElementById("tip");
+  document.querySelectorAll("#sep-matrix .dot.hit").forEach(dot => {
+    dot.addEventListener("mouseenter", e => {
+      const reason = e.target.dataset.reason;
+      const sep = e.target.dataset.sep;
+      const lesson = e.target.dataset.lesson;
+      tip.innerHTML = `<div class="tip-label">${sep}</div><div><strong>${lesson}</strong></div><div style="margin-top:4px; opacity:0.92;">${reason}</div>`;
+      tip.classList.add("show");
+    });
+    dot.addEventListener("mousemove", e => {
+      const w = tip.offsetWidth, h = tip.offsetHeight;
+      let x = e.clientX + 14, y = e.clientY + 14;
+      if (x + w > window.innerWidth - 12) x = e.clientX - w - 14;
+      if (y + h > window.innerHeight - 12) y = e.clientY - h - 14;
+      tip.style.left = x + "px"; tip.style.top = y + "px";
+    });
+    dot.addEventListener("mouseleave", () => tip.classList.remove("show"));
+  });
+})();
+
+// ============ PAGE 4: NEIGHBORS ============
+(function() {
+  // Jaccard similarity on concepts
+  function jaccard(a, b) {
+    const sa = new Set(a), sb = new Set(b);
+    const inter = [...sa].filter(x => sb.has(x)).length;
+    const uni = new Set([...sa, ...sb]).size;
+    return uni === 0 ? 0 : inter / uni;
+  }
+
+  const allPairs = [];
+  LESSONS.forEach((l, i) => {
+    const sims = LESSONS.map((other, j) => ({
+      lesson: other,
+      score: i === j ? 0 : jaccard(l.concepts, other.concepts),
+    })).filter(s => s.lesson.id !== l.id).sort((a, b) => b.score - a.score);
+    l._neighbors = sims.slice(0, 3);
+  });
+
+  // Stats
+  let bridges = 0;
+  let strongest = 0;
+  LESSONS.forEach(l => {
+    l._neighbors.forEach(n => {
+      if (n.lesson.catKey !== l.catKey) bridges++;
+      if (n.score > strongest) strongest = n.score;
+    });
+  });
+  document.getElementById("nh-bridges").textContent = Math.round(bridges / 2); // dedup directional
+  document.getElementById("nh-strongest").textContent = strongest.toFixed(2);
+
+  const grid = document.getElementById("nh-grid");
+  LESSONS.forEach(l => {
+    const card = document.createElement("div");
+    card.className = "neighbor-card";
+    let h = `<div class="nh-source"><span class="cat-dot cat-${l.catKey}"></span><span class="nh-title">${l.title}</span></div>`;
+    h += `<div class="nh-arrow">3 Most-Similar Lessons</div><div class="nh-list">`;
+    l._neighbors.forEach(n => {
+      h += `<div class="nh-item">
+        <span class="cat-dot cat-${n.lesson.catKey}"></span>
+        <span class="name">${n.lesson.title}</span>
+        <span class="score">${n.score.toFixed(2)}</span>
+      </div>`;
+    });
+    h += '</div>';
+    card.innerHTML = h;
+    grid.appendChild(card);
+  });
+})();
+
+// ============ PAGE 5: PILLARS ============
+(function() {
+  const pillarData = [
+    { name: "Constructivism", tagline: "Knowledge built, not transferred", key: "Constructivism",
+      note: "Knowledge built through hands-on construction, iteration, and failure rather than transfer from teacher to student. The bedrock of TETC's pedagogy." },
+    { name: "Design Thinking", tagline: "Empathy first", key: "Design Thinking",
+      note: "Empathy-led problem definition, ideation, and human-centered iteration. Lessons that begin with 'who is this for?' rather than 'what do we build?'" },
+    { name: "Conversational AI", tagline: "Thinking partner, not tool", key: "Conversational AI",
+      note: "AI used as a thinking partner that helps students articulate, refine, and develop their own ideas — not as a worksheet generator or answer machine." },
+  ];
+
+  pillarData.forEach(p => {
+    p.count = LESSONS.filter(l => l.pillars.includes(p.key)).length;
+    p.pct = p.count / LESSONS.length;
+    if (p.pct >= 0.7) p.health = "strong";
+    else if (p.pct >= 0.3) p.health = "mid";
+    else p.health = "weak";
+  });
+
+  const grid = document.getElementById("pillar-grid");
+  pillarData.forEach(p => {
+    const card = document.createElement("div");
+    card.className = "pillar-card health-" + p.health;
+    let status = p.health === "strong" ? "Strong Coverage" : p.health === "mid" ? "Partial Coverage" : "Coverage Gap";
+    card.innerHTML = `
+      <div class="p-name">${p.name}</div>
+      <div class="p-tagline">"${p.tagline}"</div>
+      <div class="p-num">${p.count}<span style="font-size:18px; color:var(--ink-mute); font-weight:600;"> / ${LESSONS.length}</span></div>
+      <div class="p-of">${Math.round(p.pct * 100)}% of lessons</div>
+      <div class="p-bar"><div class="p-fill" style="width:${p.pct*100}%"></div></div>
+      <div class="p-status">${status}</div>
+      <div class="p-note">${p.note}</div>
+    `;
+    grid.appendChild(card);
+  });
+
+  // Tool disappears chart
+  const tdCounts = { 1:0, 2:0, 3:0, 4:0, 5:0 };
+  LESSONS.forEach(l => tdCounts[l.toolDisappears]++);
+  const tdChart = document.getElementById("td-chart");
+  const tdLabels = {
+    1: "Tool is the lesson",
+    2: "Tool is foregrounded",
+    3: "Tool and idea balanced",
+    4: "Idea mostly primary",
+    5: "Tool fully invisible",
+  };
+  let tdHtml = '<div class="bar-chart">';
+  for (let i = 5; i >= 1; i--) {
+    const ct = tdCounts[i];
+    const pct = ct / LESSONS.length * 100;
+    const tier = i >= 4 ? "tier-1" : (i >= 3 ? "" : "tier-3");
+    tdHtml += `
+      <div class="bar-row ${tier}" style="cursor: default;">
+        <div class="concept-name">${tdLabels[i]} (${i})</div>
+        <div class="bar-track"><div class="bar-fill" style="width:${pct}%"></div></div>
+        <div class="count">${ct}</div>
+      </div>`;
+  }
+  tdHtml += '</div>';
+  tdChart.innerHTML = tdHtml;
+
+  // Failure as data chart
+  const fa = LESSONS.filter(l => l.failureAsData).length;
+  const nf = LESSONS.length - fa;
+  const fc = document.getElementById("fail-chart");
+  fc.innerHTML = `
+    <div class="bar-chart">
+      <div class="bar-row tier-1" style="cursor: default;">
+        <div class="concept-name">Includes failure-as-data</div>
+        <div class="bar-track"><div class="bar-fill" style="width:${fa/LESSONS.length*100}%"></div></div>
+        <div class="count">${fa}</div>
+      </div>
+      <div class="bar-row tier-3" style="cursor: default;">
+        <div class="concept-name">Observation-driven only</div>
+        <div class="bar-track"><div class="bar-fill" style="width:${nf/LESSONS.length*100}%"></div></div>
+        <div class="count">${nf}</div>
+      </div>
+    </div>
+  `;
+})();
+</script>
+
+</body>
+</html>
