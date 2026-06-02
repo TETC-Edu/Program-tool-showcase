@@ -183,7 +183,6 @@
     color: #fff; border-bottom: 5px solid var(--magenta);
   }
   .subhead-inner { max-width: 1180px; margin: 0 auto; padding: 30px 28px 36px; }
-  .subhead-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
   .back {
     appearance: none; border: 1px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.1);
     color: #fff; font-family: inherit; font-size: 14px; font-weight: 600;
@@ -193,12 +192,6 @@
   .back:hover { background: rgba(255,255,255,0.2); }
   .back .arrow { transition: transform 0.15s ease; }
   .back:hover .arrow { transform: translateX(-3px); }
-  .ext-link {
-    color: #fff; font-size: 13.5px; font-weight: 600; text-decoration: none;
-    border: 1px solid rgba(255,255,255,0.3); padding: 8px 14px; border-radius: 999px;
-    display: inline-flex; align-items: center; gap: 7px; transition: background 0.15s ease;
-  }
-  .ext-link:hover { background: rgba(255,255,255,0.2); }
   .subhead h2 { margin-top: 18px; font-size: clamp(26px, 3.4vw, 36px); font-weight: 700; letter-spacing: -0.01em; }
   .subhead h2 .for { color: #F5A8D0; }
   .subhead .blurb { margin-top: 10px; font-size: 16px; color: rgba(255,255,255,0.88); max-width: 64ch; }
@@ -232,12 +225,6 @@
   .btn:hover { background: var(--teal-deep); }
   .btn .arrow { transition: transform 0.15s ease; }
   .btn:hover .arrow { transform: translateX(2px); }
-
-  /* ============ EMBEDDED TOOL VIEWER ============ */
-  .embed-frame {
-    width: 100%; height: calc(100vh - 168px); min-height: 520px;
-    border: 0; display: block; background: #fff;
-  }
 
   footer { padding: 40px 0 60px; text-align: center; font-size: 13px; color: var(--ink-mute); line-height: 1.7; }
 
@@ -442,7 +429,7 @@
       <div class="card-top"><h3>Curriculum Concept Map</h3><span class="badge progress">In Progress</span></div>
       <p class="what">An interactive map of how every lesson connects to every other — by shared concepts, skills, and build progressions — rather than just by calendar order.</p>
       <p class="problem">Makes the hidden structure of the year visible, so planning and coaching can build on the threads between lessons instead of treating each one in isolation.</p>
-      <div class="card-foot"><button class="btn" onclick="show('cm')">Open tool <span class="arrow">&rarr;</span></button></div>
+      <div class="card-foot"><a class="btn" href="concept_map.html" target="_blank" rel="noopener">Open tool <span class="arrow">&rarr;</span></a></div>
     </article>
 
   </div></div>
@@ -468,46 +455,16 @@
       <div class="card-top"><h3>Year-in-Numbers Data Dashboard</h3><span class="badge progress">In Progress</span></div>
       <p class="what">Five data lenses on a full grade-year of lesson design — concept frequency, coverage gaps, and alignment to national engineering-practice standards.</p>
       <p class="problem">Turns a year of curriculum into evidence leadership can actually see, so coverage and balance decisions rest on data instead of intuition.</p>
-      <div class="card-foot"><button class="btn" onclick="show('db')">Open tool <span class="arrow">&rarr;</span></button></div>
+      <div class="card-foot"><a class="btn" href="tetc_dashboard.html" target="_blank" rel="noopener">Open tool <span class="arrow">&rarr;</span></a></div>
     </article>
 
   </div></div>
 </div>
 
-<!-- ===================== EMBEDDED: CONCEPT MAP ===================== -->
-<div id="cm" class="view">
-  <div class="subhead"><div class="subhead-inner">
-    <div class="subhead-top">
-      <button class="back" onclick="show('teachers')"><span class="arrow">&larr;</span> Back to teacher tools</button>
-      <a class="ext-link" href="concept_map.html" target="_blank" rel="noopener">Open full screen <span class="arrow">&rarr;</span></a>
-    </div>
-    <h2>Curriculum Concept Map</h2>
-    <p class="blurb">How every lesson connects to every other — running live, embedded below.</p>
-  </div></div>
-  <iframe class="embed-frame" data-src="concept_map.html" title="Curriculum Concept Map"></iframe>
-</div>
-
-<!-- ===================== EMBEDDED: DATA DASHBOARD ===================== -->
-<div id="db" class="view">
-  <div class="subhead"><div class="subhead-inner">
-    <div class="subhead-top">
-      <button class="back" onclick="show('leadership')"><span class="arrow">&larr;</span> Back to leadership tools</button>
-      <a class="ext-link" href="tetc_dashboard.html" target="_blank" rel="noopener">Open full screen <span class="arrow">&rarr;</span></a>
-    </div>
-    <h2>Year-in-Numbers Data Dashboard</h2>
-    <p class="blurb">Five data lenses on the year's lesson design — running live, embedded below.</p>
-  </div></div>
-  <iframe class="embed-frame" data-src="tetc_dashboard.html" title="Year-in-Numbers Data Dashboard"></iframe>
-</div>
-
 <script>
   function show(id) {
     document.querySelectorAll('.view').forEach(function (v) { v.classList.remove('active'); });
-    var el = document.getElementById(id);
-    el.classList.add('active');
-    // lazy-load embedded iframes on first open
-    var frame = el.querySelector('iframe[data-src]');
-    if (frame && !frame.src) { frame.src = frame.getAttribute('data-src'); }
+    document.getElementById(id).classList.add('active');
     window.scrollTo(0, 0);
   }
   function goHome() { show('landing'); }
