@@ -6,31 +6,31 @@
 <title>TETC Curriculum — Concept Map</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=JetBrains+Mono:wght@400;500;600&family=Inter+Tight:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root {
-    --teal: #186172;
-    --teal-deep: #0F4250;
-    --magenta: #BD2F7F;
-    --ink: #1A1A1A;
-    --ink-soft: #4A4A4A;
-    --paper: #FAF7F2;
-    --paper-warm: #F2EDE4;
-    --line: #C8C2B7;
-    --line-soft: #E0DBD0;
 
-    /* Thread colors — each thread type has its own hue */
-    --thread-prereq: #A0364B;      /* deep red — hard prerequisites */
-    --thread-cad: #2A4D7A;          /* navy — CAD ladder */
-    --thread-fab: #7A5A2A;           /* bronze — LightBurn ladder */
-    --thread-concept: #186172;       /* teal — concept revisits */
-    --thread-mode: #BD2F7F;          /* magenta — mechanical iteration */
-    --thread-pedagogy: #6B4FA0;      /* purple — constructivism */
+    --teal: #186172;
+    --teal-deep: #0E3F4A;
+    --magenta: #BD2F7F;
+    --ink: #36424E;
+    --ink-soft: #6B7682;
+    --paper: #FFFFFF;
+    --paper-warm: #F4F6F7;
+    --line: #E2E6E9;
+    --line-soft: #EFF2F4;
+
+    --thread-prereq: #A0364B;
+    --thread-cad: #2A4D7A;
+    --thread-fab: #B87A2A;
+    --thread-concept: #186172;
+    --thread-mode: #BD2F7F;
+    --thread-pedagogy: #6B4FA0;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
-    font-family: 'Inter Tight', system-ui, sans-serif;
-    background: var(--paper);
+    font-family: 'Figtree', system-ui, sans-serif;
+    background: var(--paper-warm);
     color: var(--ink);
     line-height: 1.5;
     -webkit-font-smoothing: antialiased;
@@ -50,7 +50,7 @@
     flex-wrap: wrap;
   }
   h1 {
-    font-family: 'Fraunces', serif;
+    font-family: 'Figtree', sans-serif;
     font-weight: 500;
     font-size: 32px;
     line-height: 1.05;
@@ -76,7 +76,6 @@
   .intro strong { color: var(--ink); }
   .intro em { color: var(--magenta); font-style: italic; }
 
-  /* THREAD TOGGLES */
   .thread-controls {
     display: flex;
     gap: 8px;
@@ -102,7 +101,7 @@
     padding: 6px 12px;
     background: var(--paper);
     border: 1.5px solid var(--line);
-    font-family: 'Inter Tight', sans-serif;
+    font-family: 'Figtree', sans-serif;
     font-size: 12px;
     font-weight: 500;
     color: var(--ink-soft);
@@ -123,9 +122,9 @@
 
   .thread-btn.active.prereq { color: var(--thread-prereq); border-color: var(--thread-prereq); background: #FBEEEF; }
   .thread-btn.active.cad { color: var(--thread-cad); border-color: var(--thread-cad); background: #E5EDF5; }
-  .thread-btn.active.fab { color: var(--thread-fab); border-color: var(--thread-fab); background: #F0E8DC; }
-  .thread-btn.active.concept { color: var(--thread-concept); border-color: var(--thread-concept); background: #E8F0F2; }
-  .thread-btn.active.mode { color: var(--thread-mode); border-color: var(--thread-mode); background: #F8E5EE; }
+  .thread-btn.active.fab { color: var(--thread-fab); border-color: var(--thread-fab); background: #FDF3E7; }
+  .thread-btn.active.concept { color: var(--thread-concept); border-color: var(--thread-concept); background: #E1EDEE; }
+  .thread-btn.active.mode { color: var(--thread-mode); border-color: var(--thread-mode); background: #FCE4ED; }
   .thread-btn.active.pedagogy { color: var(--thread-pedagogy); border-color: var(--thread-pedagogy); background: #ECE4F4; }
 
   .thread-btn.dim { opacity: 0.4; }
@@ -141,23 +140,27 @@
   }
   .all-toggle:hover { background: var(--magenta); border-color: var(--magenta); color: white; }
 
-  /* MAP CONTAINER */
   .map-wrap {
     border: 1px solid var(--line);
-    background: var(--paper);
-    overflow: auto;
+    background:
+      radial-gradient(circle at 1px 1px, rgba(51,51,51,0.05) 1px, transparent 0) 0 0 / 26px 26px,
+      var(--paper);
+    overflow: hidden;
     position: relative;
-    min-height: 760px;
+    min-height: 860px;
+    box-shadow: 0 1px 3px rgba(51,51,51,0.04);
   }
   svg.concept-map {
     display: block;
     width: 100%;
-    min-width: 1200px;
-    height: 760px;
+    height: 860px;
     user-select: none;
+    cursor: grab;
+    touch-action: none;
   }
+  svg.concept-map.panning { cursor: grabbing; }
+  #viewport { transition: none; }
 
-  /* SVG element styles */
   .edge {
     fill: none;
     stroke-width: 1.6;
@@ -171,10 +174,8 @@
   .edge.mode      { stroke: var(--thread-mode); stroke-dasharray: 6,3; stroke-width: 1.4; }
   .edge.pedagogy  { stroke: var(--thread-pedagogy); stroke-dasharray: 2,3; stroke-width: 1.4; }
 
-  /* When a thread is hidden */
   .edge.hidden { opacity: 0 !important; }
 
-  /* Default opacity (not focused) */
   svg.concept-map.has-focus .edge { opacity: 0.06; }
   svg.concept-map.has-focus .edge.related { opacity: 0.85; stroke-width: 2.5; }
   svg.concept-map:not(.has-focus) .edge { opacity: 0.5; }
@@ -192,7 +193,7 @@
     stroke-width: 1.5;
   }
   .node-rect.capstone-node {
-    fill: #F8E5EE;
+    fill: #FCE4ED;
     stroke: var(--magenta);
     stroke-width: 1.8;
   }
@@ -207,7 +208,7 @@
   svg.concept-map.has-focus .node-group.connected { opacity: 1; }
 
   .node-title {
-    font-family: 'Fraunces', serif;
+    font-family: 'Figtree', sans-serif;
     font-size: 12px;
     font-weight: 500;
     fill: var(--ink);
@@ -231,7 +232,6 @@
     pointer-events: none;
   }
 
-  /* Region labels */
   .region-label {
     font-family: 'JetBrains Mono', monospace;
     font-size: 9.5px;
@@ -242,11 +242,17 @@
     pointer-events: none;
   }
   .region-bg {
-    fill: var(--paper-warm);
-    opacity: 0.4;
+    fill: #E1EDEE;
+    opacity: 0.5;
+    stroke: #B7CFD4;
+    stroke-width: 1.4;
+    stroke-dasharray: 6 6;
+    cursor: pointer;
+    transition: opacity 0.15s;
   }
+  .region-bg:hover { opacity: 0.72; }
+  .region-label { cursor: pointer; }
 
-  /* Detail panel */
   .detail-panel {
     margin-top: 18px;
     padding: 18px 22px;
@@ -257,12 +263,12 @@
   .detail-panel.empty {
     color: var(--ink-soft);
     font-style: italic;
-    font-family: 'Fraunces', serif;
+    font-family: 'Figtree', sans-serif;
     font-size: 14px;
     line-height: 1.55;
   }
   .detail-panel h3 {
-    font-family: 'Fraunces', serif;
+    font-family: 'Figtree', sans-serif;
     font-size: 20px;
     font-weight: 500;
     letter-spacing: -0.01em;
@@ -301,13 +307,14 @@
   }
   .thread-chip.prereq { color: var(--thread-prereq); border-color: var(--thread-prereq); background: #FBEEEF; }
   .thread-chip.cad { color: var(--thread-cad); border-color: var(--thread-cad); background: #E5EDF5; }
-  .thread-chip.fab { color: var(--thread-fab); border-color: var(--thread-fab); background: #F0E8DC; }
-  .thread-chip.concept { color: var(--thread-concept); border-color: var(--thread-concept); background: #E8F0F2; }
-  .thread-chip.mode { color: var(--thread-mode); border-color: var(--thread-mode); background: #F8E5EE; }
+  .thread-chip.fab { color: var(--thread-fab); border-color: var(--thread-fab); background: #FDF3E7; }
+  .thread-chip.concept { color: var(--thread-concept); border-color: var(--thread-concept); background: #E1EDEE; }
+  .thread-chip.mode { color: var(--thread-mode); border-color: var(--thread-mode); background: #FCE4ED; }
   .thread-chip.pedagogy { color: var(--thread-pedagogy); border-color: var(--thread-pedagogy); background: #ECE4F4; }
 
   .reading-guide {
-    background: var(--paper-warm);
+    background: var(--paper);
+    border: 1px solid var(--line);
     border-left: 3px solid var(--magenta);
     padding: 12px 18px;
     margin-bottom: 18px;
@@ -326,13 +333,12 @@
     font-weight: 600;
   }
 
-  /* ============ STRING-ADDING UI ============ */
   .add-string-btn {
     background: var(--paper);
     color: var(--magenta);
     border: 1.5px solid var(--magenta);
     padding: 6px 14px;
-    font-family: 'Inter Tight', sans-serif;
+    font-family: 'Figtree', sans-serif;
     font-size: 11px;
     font-weight: 600;
     text-transform: uppercase;
@@ -348,7 +354,7 @@
     color: var(--ink-soft);
     border: 1px solid var(--line);
     padding: 6px 12px;
-    font-family: 'Inter Tight', sans-serif;
+    font-family: 'Figtree', sans-serif;
     font-size: 11px;
     font-weight: 500;
     text-transform: uppercase;
@@ -362,7 +368,7 @@
     color: var(--teal);
     border: 1.5px solid var(--teal);
     padding: 6px 14px;
-    font-family: 'Inter Tight', sans-serif;
+    font-family: 'Figtree', sans-serif;
     font-size: 11px;
     font-weight: 600;
     text-transform: uppercase;
@@ -376,7 +382,7 @@
     color: var(--ink-soft);
     border: 1px solid var(--line);
     padding: 6px 12px;
-    font-family: 'Inter Tight', sans-serif;
+    font-family: 'Figtree', sans-serif;
     font-size: 11px;
     font-weight: 500;
     text-transform: uppercase;
@@ -385,7 +391,6 @@
   }
   .reset-all-btn:hover { border-color: var(--thread-prereq); color: var(--thread-prereq); }
 
-  /* Edit button in detail panel */
   .detail-actions {
     display: flex;
     gap: 8px;
@@ -397,7 +402,7 @@
     background: var(--paper);
     border: 1px solid var(--line);
     padding: 6px 14px;
-    font-family: 'Inter Tight', sans-serif;
+    font-family: 'Figtree', sans-serif;
     font-size: 11px;
     font-weight: 500;
     text-transform: uppercase;
@@ -408,7 +413,6 @@
   .detail-action-btn:hover { border-color: var(--ink); color: var(--ink); }
   .detail-action-btn.danger:hover { border-color: var(--thread-prereq); color: var(--thread-prereq); }
 
-  /* Lesson editor modal (reuses .picker-overlay and .picker-modal classes) */
   .lesson-editor h4 {
     font-family: 'JetBrains Mono', monospace;
     font-size: 10px;
@@ -426,7 +430,7 @@
     padding: 9px 12px;
     border: 1px solid var(--line);
     background: var(--paper);
-    font-family: 'Inter Tight', sans-serif;
+    font-family: 'Figtree', sans-serif;
     font-size: 14px;
     color: var(--ink);
     margin-bottom: 6px;
@@ -454,7 +458,7 @@
     padding: 8px 12px;
     background: var(--paper);
     border: 1.5px solid var(--line);
-    font-family: 'Inter Tight', sans-serif;
+    font-family: 'Figtree', sans-serif;
     font-size: 12px;
     font-weight: 500;
     color: var(--ink-soft);
@@ -471,7 +475,7 @@
     color: var(--thread-pedagogy);
   }
   .lesson-editor .marker-options button.selected.capstone {
-    background: #F8E5EE;
+    background: #FCE4ED;
     border-color: var(--magenta);
     color: var(--magenta);
   }
@@ -491,7 +495,6 @@
     color: white;
   }
 
-  /* Edge popover — appears at click position */
   .edge-popover {
     position: fixed;
     background: var(--paper);
@@ -505,7 +508,7 @@
   }
   .edge-popover.visible { display: block; }
   .edge-popover-header {
-    font-family: 'Fraunces', serif;
+    font-family: 'Figtree', sans-serif;
     font-size: 14px;
     font-weight: 500;
     margin-bottom: 4px;
@@ -545,7 +548,7 @@
     padding: 5px 8px;
     background: var(--paper);
     border: 1px solid var(--line);
-    font-family: 'Inter Tight', sans-serif;
+    font-family: 'Figtree', sans-serif;
     font-size: 11px;
     color: var(--ink-soft);
     cursor: pointer;
@@ -554,9 +557,9 @@
   .edge-popover-thread-options button:hover { border-color: var(--ink); color: var(--ink); }
   .edge-popover-thread-options button.selected.prereq    { border-color: var(--thread-prereq); color: var(--thread-prereq); background: #FBEEEF; }
   .edge-popover-thread-options button.selected.cad       { border-color: var(--thread-cad); color: var(--thread-cad); background: #E5EDF5; }
-  .edge-popover-thread-options button.selected.fab       { border-color: var(--thread-fab); color: var(--thread-fab); background: #F0E8DC; }
-  .edge-popover-thread-options button.selected.concept   { border-color: var(--thread-concept); color: var(--thread-concept); background: #E8F0F2; }
-  .edge-popover-thread-options button.selected.mode      { border-color: var(--thread-mode); color: var(--thread-mode); background: #F8E5EE; }
+  .edge-popover-thread-options button.selected.fab       { border-color: var(--thread-fab); color: var(--thread-fab); background: #FDF3E7; }
+  .edge-popover-thread-options button.selected.concept   { border-color: var(--thread-concept); color: var(--thread-concept); background: #E1EDEE; }
+  .edge-popover-thread-options button.selected.mode      { border-color: var(--thread-mode); color: var(--thread-mode); background: #FCE4ED; }
   .edge-popover-thread-options button.selected.pedagogy  { border-color: var(--thread-pedagogy); color: var(--thread-pedagogy); background: #ECE4F4; }
   .edge-popover-thread-options .mini-dot {
     width: 10px;
@@ -575,7 +578,7 @@
     padding: 6px 10px;
     border: 1px solid var(--line);
     background: var(--paper);
-    font-family: 'Inter Tight', sans-serif;
+    font-family: 'Figtree', sans-serif;
     font-size: 12.5px;
     color: var(--ink);
     margin-bottom: 12px;
@@ -590,7 +593,7 @@
     padding: 6px 12px;
     background: var(--paper);
     border: 1px solid var(--line);
-    font-family: 'Inter Tight', sans-serif;
+    font-family: 'Figtree', sans-serif;
     font-size: 11px;
     font-weight: 500;
     text-transform: uppercase;
@@ -606,7 +609,6 @@
   }
   .edge-popover-actions button.primary:hover { background: var(--magenta); border-color: var(--magenta); }
 
-  /* Edge hit-area: thicker invisible stroke for easier clicking */
   .edge-hit {
     fill: none;
     stroke: transparent;
@@ -615,19 +617,18 @@
     pointer-events: stroke;
   }
 
-  /* Default node cursor — grab when in default mode */
   .node-group .node-rect { cursor: grab; }
   .node-group:active .node-rect { cursor: grabbing; }
-  /* In string-mode, override to crosshair (already defined below) */
+
   svg.concept-map.string-mode .node-group .node-rect { cursor: crosshair; }
-  /* While dragging */
+
   .node-group.dragging .node-rect {
     cursor: grabbing;
     fill: var(--paper-warm);
     stroke-width: 2.4;
     filter: drop-shadow(0 4px 10px rgba(0,0,0,0.18));
   }
-  /* Suppress text selection while dragging */
+
   .map-wrap.dragging-active { user-select: none; -webkit-user-select: none; }
 
   .add-string-status {
@@ -638,12 +639,12 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    font-family: 'Inter Tight', sans-serif;
+    font-family: 'Figtree', sans-serif;
     font-size: 13px;
     font-weight: 500;
   }
   .add-string-status .status-text {
-    font-family: 'Fraunces', serif;
+    font-family: 'Figtree', sans-serif;
     font-size: 15px;
     font-style: italic;
   }
@@ -652,7 +653,7 @@
     border: 1px solid rgba(255,255,255,0.4);
     color: white;
     padding: 4px 12px;
-    font-family: 'Inter Tight', sans-serif;
+    font-family: 'Figtree', sans-serif;
     font-size: 11px;
     font-weight: 500;
     text-transform: uppercase;
@@ -661,20 +662,18 @@
   }
   .status-cancel:hover { background: rgba(255,255,255,0.35); }
 
-  /* String-mode visual state for nodes */
   svg.concept-map.string-mode .node-group { cursor: crosshair; }
   svg.concept-map.string-mode .node-group .node-rect {
     stroke-dasharray: 4,3;
     stroke-width: 1.5;
   }
   svg.concept-map.string-mode .node-group.first-pick .node-rect {
-    fill: #F8E5EE;
+    fill: #FCE4ED;
     stroke: var(--magenta);
     stroke-width: 2.5;
     stroke-dasharray: none;
   }
 
-  /* User-added strings layer */
   .edge.user-string {
     stroke-width: 2.4;
     opacity: 0.9;
@@ -685,11 +684,10 @@
   .edge.user-string.concept   { stroke: var(--thread-concept); stroke-dasharray: 1,4; }
   .edge.user-string.mode      { stroke: var(--thread-mode); stroke-dasharray: 6,3; }
   .edge.user-string.pedagogy  { stroke: var(--thread-pedagogy); stroke-dasharray: 2,3; }
-  /* When focus is active, user strings still respect the related/hidden states */
+
   svg.concept-map.has-focus .edge.user-string { opacity: 0.08; }
   svg.concept-map.has-focus .edge.user-string.related { opacity: 1; stroke-width: 3; }
 
-  /* Picker modal */
   .picker-overlay {
     position: fixed;
     inset: 0;
@@ -711,7 +709,7 @@
     box-shadow: 0 12px 40px rgba(0,0,0,0.25);
   }
   .picker-summary {
-    font-family: 'Fraunces', serif;
+    font-family: 'Figtree', sans-serif;
     font-size: 16px;
     color: var(--ink);
     margin-bottom: 18px;
@@ -744,16 +742,16 @@
     border: 1.5px solid var(--line);
     text-align: left;
     cursor: pointer;
-    font-family: 'Inter Tight', sans-serif;
+    font-family: 'Figtree', sans-serif;
     transition: all 0.12s;
   }
   .picker-thread:hover { border-color: var(--ink); background: var(--paper-warm); }
   .picker-thread.selected { background: var(--paper-warm); }
   .picker-thread.selected.prereq { border-color: var(--thread-prereq); background: #FBEEEF; }
   .picker-thread.selected.cad { border-color: var(--thread-cad); background: #E5EDF5; }
-  .picker-thread.selected.fab { border-color: var(--thread-fab); background: #F0E8DC; }
-  .picker-thread.selected.concept { border-color: var(--thread-concept); background: #E8F0F2; }
-  .picker-thread.selected.mode { border-color: var(--thread-mode); background: #F8E5EE; }
+  .picker-thread.selected.fab { border-color: var(--thread-fab); background: #FDF3E7; }
+  .picker-thread.selected.concept { border-color: var(--thread-concept); background: #E1EDEE; }
+  .picker-thread.selected.mode { border-color: var(--thread-mode); background: #FCE4ED; }
   .picker-thread.selected.pedagogy { border-color: var(--thread-pedagogy); background: #ECE4F4; }
   .picker-thread .dot {
     width: 14px;
@@ -768,7 +766,7 @@
   .picker-thread.mode .dot { background: var(--thread-mode); }
   .picker-thread.pedagogy .dot { background: var(--thread-pedagogy); }
   .picker-thread-name {
-    font-family: 'Fraunces', serif;
+    font-family: 'Figtree', sans-serif;
     font-size: 14.5px;
     font-weight: 500;
     color: var(--ink);
@@ -776,7 +774,7 @@
   .picker-thread-desc {
     font-size: 11.5px;
     color: var(--ink-soft);
-    font-family: 'Inter Tight', sans-serif;
+    font-family: 'Figtree', sans-serif;
     margin-top: 1px;
   }
 
@@ -799,7 +797,7 @@
     padding: 9px 12px;
     border: 1px solid var(--line);
     background: var(--paper);
-    font-family: 'Inter Tight', sans-serif;
+    font-family: 'Figtree', sans-serif;
     font-size: 14px;
     color: var(--ink);
     margin-bottom: 18px;
@@ -813,7 +811,7 @@
   }
   .picker-btn {
     padding: 9px 18px;
-    font-family: 'Inter Tight', sans-serif;
+    font-family: 'Figtree', sans-serif;
     font-size: 12px;
     font-weight: 600;
     text-transform: uppercase;
@@ -833,7 +831,6 @@
   .picker-btn.primary:hover:not(:disabled) { background: #9F2469; border-color: #9F2469; }
   .picker-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
-  /* User strings panel */
   .user-strings-panel {
     margin-top: 18px;
     padding: 18px 22px;
@@ -849,7 +846,7 @@
     border-bottom: 1px solid var(--line-soft);
   }
   .user-strings-header h3 {
-    font-family: 'Fraunces', serif;
+    font-family: 'Figtree', sans-serif;
     font-size: 18px;
     font-weight: 500;
     letter-spacing: -0.01em;
@@ -859,7 +856,7 @@
     background: var(--paper);
     border: 1px solid var(--line);
     padding: 5px 12px;
-    font-family: 'Inter Tight', sans-serif;
+    font-family: 'Figtree', sans-serif;
     font-size: 11px;
     font-weight: 500;
     text-transform: uppercase;
@@ -896,7 +893,7 @@
   .user-strings-list .string-dot.pedagogy { background: var(--thread-pedagogy); }
   .user-strings-list .string-info { flex: 1; }
   .user-strings-list .string-pair {
-    font-family: 'Fraunces', serif;
+    font-family: 'Figtree', sans-serif;
     font-size: 14px;
     font-weight: 500;
     color: var(--ink);
@@ -920,7 +917,7 @@
     font-style: italic;
     color: var(--ink-soft);
     font-size: 12.5px;
-    font-family: 'Fraunces', serif;
+    font-family: 'Figtree', sans-serif;
     margin-top: 3px;
   }
   .user-strings-list .string-delete {
@@ -949,26 +946,361 @@
     overflow: auto;
   }
   #strings-export-output.visible { display: block; }
+
+  .node-rect { filter: drop-shadow(0 1px 1.5px rgba(51,51,51,0.10)); }
+
+  .map-controls {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 20;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .map-ctrl-btn {
+    width: 34px;
+    height: 34px;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    color: var(--ink-soft);
+    font-family: 'Figtree', sans-serif;
+    font-size: 18px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 1px 3px rgba(51,51,51,0.10);
+    transition: all 0.12s;
+  }
+  .map-ctrl-btn:hover { border-color: var(--ink); color: var(--ink); }
+  .map-ctrl-btn.fit {
+    width: auto;
+    height: auto;
+    padding: 7px 8px;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .utility-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+  }
+  .search-box {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    background: var(--paper);
+    border: 1.5px solid var(--line);
+    padding: 6px 12px;
+    min-width: 240px;
+    transition: border-color 0.12s;
+  }
+  .search-box:focus-within { border-color: var(--teal); }
+  .search-box .search-icon { color: var(--ink-soft); font-size: 15px; line-height: 1; }
+  .search-box input {
+    border: none;
+    background: none;
+    outline: none;
+    font-family: 'Figtree', sans-serif;
+    font-size: 13.5px;
+    color: var(--ink);
+    flex: 1;
+    width: 100%;
+  }
+  .search-box .search-clear {
+    border: none;
+    background: none;
+    color: var(--ink-soft);
+    cursor: pointer;
+    font-size: 17px;
+    line-height: 1;
+    padding: 0 2px;
+    opacity: 0.6;
+  }
+  .search-box .search-clear:hover { opacity: 1; color: var(--magenta); }
+
+  .util-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--paper);
+    border: 1.5px solid var(--line);
+    padding: 7px 14px;
+    font-family: 'Figtree', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--ink-soft);
+    cursor: pointer;
+    transition: all 0.12s;
+  }
+  .util-btn .util-dot {
+    width: 9px; height: 9px; border-radius: 50%;
+    border: 1.5px solid var(--ink-soft);
+    background: none;
+    transition: all 0.12s;
+  }
+  .util-btn:hover { border-color: var(--ink); color: var(--ink); }
+  .util-btn.active {
+    border-color: var(--teal);
+    color: var(--teal);
+    background: var(--paper-warm);
+  }
+  .util-btn.active .util-dot { background: var(--teal); border-color: var(--teal); }
+  .util-hint {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.04em;
+    color: var(--ink-soft);
+    opacity: 0.85;
+    margin-left: auto;
+  }
+  .util-hint strong { color: var(--ink-soft); }
+
+  svg.concept-map.search-active .node-group { opacity: 0.16; transition: opacity 0.18s; }
+  svg.concept-map.search-active .node-group.search-match { opacity: 1; }
+  svg.concept-map.search-active .node-group.search-match .node-rect {
+    stroke: var(--magenta);
+    stroke-width: 2.4;
+  }
+
+  svg.concept-map.has-focus .node-group.focused.pinned .node-rect {
+    stroke: var(--teal);
+    stroke-width: 2.6;
+    filter: drop-shadow(0 3px 8px rgba(24,97,114,0.30));
+  }
+
+  .edge-label-text {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 8.5px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    fill: var(--ink);
+    pointer-events: none;
+  }
+  .edge-label-bg {
+    fill: var(--paper);
+    opacity: 0.92;
+    pointer-events: none;
+  }
+
+  .panel-row {
+    display: flex;
+    gap: 16px;
+    align-items: stretch;
+    margin-top: 18px;
+    flex-wrap: wrap;
+  }
+  .panel-row .detail-panel {
+    margin-top: 0;
+    flex: 1 1 420px;
+  }
+  .audit-panel {
+    flex: 1 1 300px;
+    max-width: 360px;
+    padding: 16px 20px;
+    background: var(--teal-deep);
+    border: 1px solid var(--teal-deep);
+    color: var(--paper);
+  }
+  .audit-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(255,255,255,0.18);
+  }
+  .audit-header h3 {
+    font-family: 'Figtree', sans-serif;
+    font-size: 17px;
+    font-weight: 500;
+    color: var(--paper);
+  }
+  .audit-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 8.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: #9FC9D1;
+    font-weight: 600;
+  }
+  .audit-stat-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .audit-stat {
+    background: rgba(255,255,255,0.06);
+    padding: 10px 12px;
+    border-left: 2px solid #9FC9D1;
+  }
+  .audit-stat .num {
+    font-family: 'Figtree', sans-serif;
+    font-size: 26px;
+    font-weight: 600;
+    line-height: 1;
+    color: var(--paper);
+  }
+  .audit-stat .num.warn { color: #F0C896; }
+  .audit-stat .lab {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 8.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: rgba(255,255,255,0.7);
+    margin-top: 5px;
+    line-height: 1.3;
+  }
+  .audit-section { margin-bottom: 14px; }
+  .audit-section:last-child { margin-bottom: 0; }
+  .audit-section h4 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: #9FC9D1;
+    font-weight: 600;
+    margin-bottom: 7px;
+  }
+  .audit-chip-row { display: flex; flex-wrap: wrap; gap: 5px; }
+  .audit-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255,255,255,0.07);
+    padding: 4px 9px;
+    font-size: 12px;
+    color: var(--paper);
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: all 0.12s;
+    font-family: 'Figtree', sans-serif;
+  }
+  .audit-item:hover { background: rgba(255,255,255,0.16); border-color: rgba(255,255,255,0.3); }
+  .audit-item .mini-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .audit-item .mini-dot.prereq { background: var(--thread-prereq); }
+  .audit-item .mini-dot.cad { background: var(--thread-cad); }
+  .audit-item .mini-dot.fab { background: var(--thread-fab); }
+  .audit-item .mini-dot.concept { background: var(--thread-concept); }
+  .audit-item .mini-dot.mode { background: var(--thread-mode); }
+  .audit-item .mini-dot.pedagogy { background: var(--thread-pedagogy); }
+  .audit-item .cnt { color: rgba(255,255,255,0.6); font-size: 10px; font-family: 'JetBrains Mono', monospace; }
+  .audit-empty { font-size: 12px; color: rgba(255,255,255,0.6); font-style: italic; font-family: 'Figtree', sans-serif; }
+  .audit-note {
+    font-size: 11px;
+    color: rgba(255,255,255,0.55);
+    line-height: 1.5;
+    margin-top: 4px;
+    font-style: italic;
+    font-family: 'Figtree', sans-serif;
+  }
+
+  header { border-bottom: 1px solid var(--line); align-items: flex-start; }
+  .title-block .eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--teal);
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+  h1 {
+    font-family: 'Figtree', sans-serif;
+    font-weight: 800;
+    font-size: 42px;
+    line-height: 0.98;
+    letter-spacing: -0.035em;
+    color: var(--ink);
+  }
+  .title-block .subtitle {
+    font-family: 'Figtree', sans-serif;
+    font-style: italic;
+    font-weight: 400;
+    font-size: 20px;
+    color: var(--ink-soft);
+    margin-top: 10px;
+    letter-spacing: -0.01em;
+  }
+  .meta { color: var(--ink-soft); }
+
+  .intro { font-size: 15px; }
+  .intro em { color: var(--teal); }
+
+  .thread-btn, .util-btn, .ghost-btn, .all-toggle, .add-string-btn, .add-lesson-btn,
+  .reset-positions-btn, .reset-all-btn, .detail-action-btn, .status-cancel, .picker-btn,
+  .search-box {
+    border-radius: 999px;
+  }
+  .map-ctrl-btn { border-radius: 10px; box-shadow: 0 2px 6px rgba(54,66,78,0.12); }
+  .detail-panel, .audit-panel, .user-strings-panel, .reading-guide,
+  .add-string-status, .picker-modal, .edge-popover {
+    border-radius: 16px;
+  }
+  .lesson-editor input, .lesson-editor textarea, #picker-label, .label-input {
+    border-radius: 10px;
+  }
+
+  .map-wrap {
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    background:
+      radial-gradient(circle at 1px 1px, rgba(54,66,78,0.045) 1px, transparent 0) 0 0 / 30px 30px,
+      var(--paper);
+    box-shadow: 0 4px 18px rgba(54,66,78,0.06);
+  }
+
+  .node-rect { rx: 8px; }
+  .node-rect:not(.pedagogy-node):not(.capstone-node) {
+    fill: #ffffff;
+    stroke: #D4DADE;
+    stroke-width: 1.3;
+  }
+  .node-group .node-rect { filter: drop-shadow(0 1.5px 3px rgba(54,66,78,0.10)); }
+  .node-group:hover .node-rect { filter: drop-shadow(0 5px 12px rgba(54,66,78,0.18)); }
+  .node-title { font-weight: 600; }
+
+  .reading-guide {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--magenta);
+    box-shadow: 0 1px 4px rgba(54,66,78,0.04);
+  }
+  .reading-guide strong { color: var(--magenta); }
+
+  .thread-btn { border-width: 1.5px; font-weight: 500; }
 </style>
 </head>
 <body>
 
 <header>
-  <h1>Concept Map<br><em>What connects to what</em></h1>
+  <div class="title-block">
+    <div class="eyebrow">TETC Curriculum · 9th Grade</div>
+    <h1>Concept Map</h1>
+    <div class="subtitle">What connects to what</div>
+  </div>
   <div class="meta">
-    22 lessons · 6 thread types<br>
+    22 lessons · 5 thread types<br>
     Position = idea proximity, not time<br>
-    Hover a lesson to focus
+    Hover to preview · click to pin · pinch to zoom
   </div>
 </header>
 
 <p class="intro">
-  Lessons clustered by <strong>shared threads</strong> rather than by time or domain. Lessons in the dense center share many connections; lessons toward the edges have fewer. <em>Hover any lesson</em> to fade everything except its threads. <em>Click a thread filter</em> to show or hide that connection type. The implicit threads — concept revisits, mechanical iteration, constructivism — are <em>where the Connect conversation lives</em>.
+  Lessons clustered by <strong>shared threads</strong> rather than by time or domain. Lessons in the dense center share many connections; lessons toward the edges have fewer. <em>Hover any lesson</em> to fade everything except its threads. <em>Click a thread filter</em> to show or hide that connection type. The implicit threads — concept revisits, mechanical iteration — are <em>where the Connect conversation lives</em>.
 </p>
 
 <div class="reading-guide">
   <strong>What the lines mean</strong>
-  Solid red = hard prerequisite (Lesson B literally needs Lesson A). Dashed navy/bronze = explicit skill ladders (CAD, LightBurn). Dotted teal = concept revisits. Long-dash magenta = mechanical iteration mode of work. Short-dash purple = constructivist pedagogy. The dotted/dashed lines are mostly <em>implicit in current curriculum</em> — visible to coaches, invisible to students.
+  Solid red = hard prerequisite (Lesson B literally needs Lesson A). Dashed navy/bronze = explicit skill ladders (CAD, LightBurn). Dotted teal = concept revisits. Long-dash magenta = mechanical iteration mode of work. The dotted/dashed lines are mostly <em>implicit in current curriculum</em> — visible to coaches, invisible to students.
 </div>
 
 <div class="thread-controls">
@@ -988,9 +1320,6 @@
   <button class="thread-btn mode active" data-thread="mode">
     <span class="swatch dotted"></span> Mechanical iteration
   </button>
-  <button class="thread-btn pedagogy active" data-thread="pedagogy">
-    <span class="swatch dotted"></span> Constructivism
-  </button>
   <button class="thread-btn all-toggle" id="toggle-all">Hide all</button>
   <button class="thread-btn add-string-btn" id="add-string-btn">+ Add String</button>
   <button class="thread-btn add-lesson-btn" id="add-lesson-btn">+ Add Lesson</button>
@@ -1003,32 +1332,61 @@
   <button class="status-cancel" id="add-string-cancel">Cancel</button>
 </div>
 
+<div class="utility-bar">
+  <div class="search-box">
+    <span class="search-icon">⌕</span>
+    <input type="text" id="search-input" placeholder="Find a lesson…" autocomplete="off">
+    <button class="search-clear" id="search-clear" title="Clear" style="display:none;">×</button>
+  </div>
+  <button class="util-btn" id="trace-toggle" title="Highlight the full prerequisite / ladder chain when a lesson is focused">
+    <span class="util-dot"></span> Trace chains
+  </button>
+  <span class="util-hint">Pinch or use +/− to zoom · drag empty space to pan · <strong>click</strong> a lesson to pin it</span>
+</div>
+
 <div class="map-wrap">
-  <svg class="concept-map" id="map" viewBox="0 0 1500 760" xmlns="http://www.w3.org/2000/svg">
+  <div class="map-controls">
+    <button class="map-ctrl-btn" id="zoom-in" title="Zoom in">+</button>
+    <button class="map-ctrl-btn" id="zoom-out" title="Zoom out">−</button>
+    <button class="map-ctrl-btn fit" id="zoom-fit" title="Fit map to view">Fit</button>
+  </div>
+  <svg class="concept-map" id="map" viewBox="0 0 1620 1010" xmlns="http://www.w3.org/2000/svg">
     <defs>
-      <marker id="arrow-prereq" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <marker id="arrow-prereq" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
         <path d="M0,0 L10,5 L0,10 z" fill="#A0364B"/>
+      </marker>
+      <marker id="arrow-cad" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5.5" markerHeight="5.5" orient="auto-start-reverse">
+        <path d="M0,0 L10,5 L0,10 z" fill="#2A4D7A"/>
+      </marker>
+      <marker id="arrow-fab" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5.5" markerHeight="5.5" orient="auto-start-reverse">
+        <path d="M0,0 L10,5 L0,10 z" fill="#B87A2A"/>
       </marker>
     </defs>
 
-    <!-- Region backgrounds — soft hints at idea clusters -->
-    <g id="regions">
-      <ellipse class="region-bg" cx="750" cy="400" rx="380" ry="240" />
-      <text class="region-label" x="750" y="220" text-anchor="middle">Iteration core</text>
+    <g id="viewport">
+
+      <g id="regions"></g>
+
+      <g id="edges"></g>
+      <g id="user-edges"></g>
+      <g id="edge-labels"></g>
+
+      <g id="nodes"></g>
     </g>
-
-    <!-- ============ EDGES ============ -->
-    <!-- Drawn first so nodes overlay them -->
-    <g id="edges"></g>
-    <g id="user-edges"></g>
-
-    <!-- ============ NODES ============ -->
-    <g id="nodes"></g>
   </svg>
 </div>
 
-<div class="detail-panel empty" id="detail">
-  Hover a lesson to see its threads. Click a thread filter above to isolate one connection type.
+<div class="panel-row">
+  <div class="detail-panel empty" id="detail">
+    Hover a lesson to see its threads. Click to pin it. Use the thread filters above to isolate one connection type.
+  </div>
+  <div class="audit-panel" id="audit-panel">
+    <div class="audit-header">
+      <h3>Curriculum audit</h3>
+      <span class="audit-tag">Derived · live</span>
+    </div>
+    <div class="audit-body" id="audit-body"></div>
+  </div>
 </div>
 
 <div class="user-strings-panel" id="user-strings-panel" style="display:none;">
@@ -1043,7 +1401,6 @@
   <pre id="strings-export-output"></pre>
 </div>
 
-<!-- Thread picker modal -->
 <div class="picker-overlay" id="picker-overlay" style="display:none;">
   <div class="picker-modal">
     <div class="picker-summary" id="picker-summary"></div>
@@ -1084,13 +1441,6 @@
           <div class="picker-thread-desc">Same mode of work — build, measure, refine</div>
         </div>
       </button>
-      <button class="picker-thread pedagogy" data-thread="pedagogy">
-        <span class="dot"></span>
-        <div>
-          <div class="picker-thread-name">Constructivism</div>
-          <div class="picker-thread-desc">Discovery-based pedagogy</div>
-        </div>
-      </button>
     </div>
     <label for="picker-label" class="picker-label-row">
       Label <span class="optional">optional</span>
@@ -1103,7 +1453,6 @@
   </div>
 </div>
 
-<!-- Lesson editor modal -->
 <div class="picker-overlay" id="lesson-editor-overlay" style="display:none;">
   <div class="picker-modal lesson-editor">
     <div class="picker-summary" id="lesson-editor-title">Edit lesson</div>
@@ -1122,8 +1471,7 @@
     <h4>Marker</h4>
     <div class="marker-options" id="le-markers">
       <button data-marker="none" class="selected">None</button>
-      <button data-marker="pedagogy">★ Pedagogy</button>
-      <button data-marker="capstone">★ Capstone</button>
+      <button data-marker="capstone">Capstone</button>
     </div>
 
     <div class="picker-actions">
@@ -1136,7 +1484,6 @@
   </div>
 </div>
 
-<!-- Edge popover (positioned at click) -->
 <div class="edge-popover" id="edge-popover">
   <div class="edge-popover-header" id="edge-popover-header"></div>
   <div class="edge-popover-meta" id="edge-popover-meta"></div>
@@ -1154,130 +1501,97 @@
 </div>
 
 <script>
-// ============ DATA ============
-// Lesson positions — chosen by hand for readability.
-// Heavy-thread lessons in center, light-thread lessons at edges.
-// Pedagogy openers (Proof Day, Truss Bridge) cluster top-left.
-// Robotics chain across center (Bucky as final destination).
-// CAD ladder runs across the bottom.
-// LightBurn ladder runs across the top-right.
-// Chemistry cluster mid-left.
-// Standalone leaves at the periphery.
 
 const NODES = [
-  // === Pedagogy openers (top-left) ===
-  { id: 'proof',     x: 70,   y: 60,  w: 170, h: 50, name: 'Proof Day', sub: 'PHYS · 90 MIN · ★', star: true, type: 'pedagogy',
+
+  { id: 'proof',     x: 90, y: 300,  w: 170, h: 50, name: 'Proof Day', sub: 'PHYS · 90 MIN',
     skill: 'Discover V=D/T from student-led data; modeling math from real-world motion' },
-  { id: 'truss',     x: 70,   y: 140, w: 170, h: 50, name: 'Truss Bridge', sub: 'INTRO · 90 MIN · ★', star: true, type: 'pedagogy',
+  { id: 'truss',     x: 650, y: 520, w: 170, h: 50, name: 'Truss Bridge', sub: 'INTRO · 90 MIN',
     skill: 'Engineering design process demonstrated via build-fail-learn-rebuild' },
 
-  // === Electrical / on-ramp (left edge) ===
-  { id: 'elec',      x: 60,   y: 280, w: 180, h: 50, name: 'Intro to Electrical', sub: 'ELEC · 90 MIN',
+  { id: 'elec',      x: 90, y: 470, w: 180, h: 50, name: 'Intro to Electrical', sub: 'ELEC · 90 MIN',
     skill: 'Multimeter use, soldering on PCB, series/parallel circuits' },
-  { id: 'bugbots',   x: 80,   y: 380, w: 150, h: 50, name: 'Bug Bots', sub: 'ENG · 90 MIN',
+  { id: 'bugbots',   x: 650, y: 360, w: 150, h: 50, name: 'Bug Bots', sub: 'ENG · 90 MIN',
     skill: 'Creative iteration with vibration motor + battery; pre-formal motion concepts' },
 
-  // === Chemistry cluster (left-center) ===
-  { id: 'rainbow',   x: 240,  y: 530, w: 140, h: 50, name: 'Rainbow Lab', sub: 'CHEM · WEAK',
+  { id: 'rainbow',   x: 90, y: 640, w: 140, h: 50, name: 'Rainbow Lab', sub: 'CHEM',
     skill: 'Graduated cylinder, metric system, lab safety, precision measurement' },
-  { id: 'piezo',     x: 60,   y: 590, w: 170, h: 50, name: 'Piezoelectric Crystals', sub: 'CHEM · INT',
+  { id: 'piezo',     x: 300, y: 730, w: 170, h: 50, name: 'Piezoelectric Crystals', sub: 'CHEM · INT',
     skill: 'Supersaturation, crystallization, voltage measurement (multimeter callback)' },
 
-  // === LightBurn ladder (top, runs left to right) ===
-  { id: 'laser',     x: 280,  y: 60,  w: 200, h: 50, name: 'Intro Laser + Name Badge', sub: 'FAB · 2 × 90 · MERGED',
+  { id: 'laser',     x: 330, y: 80,  w: 200, h: 50, name: 'Intro Laser + Name Badge', sub: 'FAB · 2 × 90',
     skill: 'LightBurn UI; trace image; alignment; first laser cuts' },
-  { id: 'stencil',   x: 540,  y: 60,  w: 150, h: 50, name: 'Stencil Lesson', sub: 'FAB · UNDOC',
+  { id: 'stencil',   x: 620, y: 80,  w: 150, h: 50, name: 'Stencil Lesson', sub: 'FAB',
     skill: 'Cut LightBurn stencils for Bleach T-Shirts application' },
-  { id: 'souvenir',  x: 800,  y: 60,  w: 170, h: 50, name: 'Personalized Souvenir', sub: 'FAB · 2 × 90',
+  { id: 'souvenir',  x: 910, y: 80,  w: 170, h: 50, name: 'Personalized Souvenir', sub: 'FAB · 2 × 90',
     skill: 'Speed/power calibration on laser cutter; weld; layer types' },
-  { id: 'puzzle',    x: 1050, y: 60,  w: 160, h: 50, name: 'Laser Cut Puzzle', sub: 'FAB · 2 × 90',
+  { id: 'puzzle',    x: 1210, y: 80,  w: 160, h: 50, name: 'Laser Cut Puzzle', sub: 'FAB · 2 × 90',
     skill: 'Edit Node tool; multi-piece interlocking design' },
 
-  // === Bleach (chemistry side, near stencil) ===
-  { id: 'bleach',    x: 540,  y: 160, w: 150, h: 50, name: 'Bleach T-Shirts', sub: 'CHEM · BANGER',
+  { id: 'bleach',    x: 620, y: 210, w: 150, h: 50, name: 'Bleach T-Shirts', sub: 'CHEM',
     skill: 'Oxidation as concept; ratio application across 15 bleach concentrations' },
 
-  // === Iteration core (the dense center) ===
-  // Variable-testing & mechanical-iteration cluster
-  { id: 'ln2',       x: 380,  y: 320, w: 150, h: 50, name: 'LN₂ Ice Cream', sub: 'CHEM · 1 VAR',
+  { id: 'ln2',       x: 430, y: 400, w: 150, h: 50, name: 'LN₂ Ice Cream', sub: 'CHEM · 1 VAR',
     skill: 'Single-variable comparison; baseline + variant; observation from evidence' },
-  { id: 'spheri',    x: 440,  y: 420, w: 150, h: 50, name: 'Spherification', sub: 'CHEM · 3 VAR',
+  { id: 'spheri',    x: 430, y: 560, w: 150, h: 50, name: 'Spherification', sub: 'CHEM · 3 VAR',
     skill: 'Three-round controlled-variable testing with rubric' },
-  { id: 'rubber',    x: 600,  y: 530, w: 160, h: 50, name: 'Rubber Band Car', sub: 'PHYS · 2 × 90',
+  { id: 'rubber',    x: 860, y: 610, w: 160, h: 50, name: 'Rubber Band Car', sub: 'PHYS · 2 × 90',
     skill: 'Reverse engineering example car + iterate; speed measurement' },
-  { id: 'catapult',  x: 700,  y: 360, w: 150, h: 50, name: 'Catapults', sub: 'ENG · 2 × 90',
+  { id: 'catapult',  x: 860, y: 440, w: 150, h: 50, name: 'Catapults', sub: 'ENG · 2 × 90',
     skill: 'Mechanical iteration on physical artifact; two competition events' },
-  { id: 'judo',      x: 880,  y: 480, w: 175, h: 50, name: 'Hydraulic JudoBots', sub: 'ENG · INT',
+  { id: 'judo',      x: 1080, y: 520, w: 175, h: 50, name: 'Hydraulic JudoBots', sub: 'ENG · INT',
     skill: 'Pascal Principle + syringe ratios as design tool; head-to-head competition' },
 
-  // === Robotics chain (right side) ===
-  { id: 'robounit1', x: 940,  y: 320, w: 200, h: 60, name: 'Robot Unit 1 (clawbot)', sub: 'ROBO · 5 DAYS · FALL CLOSER',
+  { id: 'robounit1', x: 1280, y: 310, w: 200, h: 60, name: 'Robot Unit 1 (clawbot)', sub: 'ROBO · 5 DAYS',
     skill: 'First real tools and first coding for most students; build → drive → RoboSoccer → Freeze Tag' },
-  { id: 'bucky',     x: 1230, y: 380, w: 220, h: 70, name: 'Bucky Basketball', sub: 'ROBO · 5 DAYS · ★ CAPSTONE', star: true, type: 'capstone',
+  { id: 'bucky',     x: 1280, y: 470, w: 220, h: 70, name: 'Bucky Basketball', sub: 'ROBO · 5 DAYS · CAPSTONE', type: 'capstone',
     skill: 'Three-subsystem integration: launcher + intake + autonomous code' },
 
-  // === CAD ladder (bottom row) ===
-  { id: 'dice',      x: 250,  y: 690, w: 130, h: 50, name: '3D Dice', sub: 'CAD · 90 MIN',
+  { id: 'dice',      x: 330, y: 890, w: 130, h: 50, name: '3D Dice', sub: 'CAD · 90 MIN',
     skill: 'SolidWorks UI: sketch → dimension → extrude; first 3D part' },
-  { id: 'spinner',   x: 480,  y: 690, w: 140, h: 50, name: 'Fidget Spinner', sub: 'CAD · 90 MIN',
+  { id: 'spinner',   x: 620, y: 890, w: 140, h: 50, name: 'Fidget Spinner', sub: 'CAD · 90 MIN',
     skill: 'Iterate physical design via CAD; close digital → physical → test loop' },
-  { id: 'dnm',       x: 720,  y: 690, w: 180, h: 50, name: 'Do Nothing Machine', sub: 'CAD · 2 × 90',
+  { id: 'dnm',       x: 910, y: 890, w: 180, h: 50, name: 'Do Nothing Machine', sub: 'CAD · 2 × 90',
     skill: 'Tolerance reasoning, multi-part assembly, 3D print prep' },
-  { id: 'gripper',   x: 1010, y: 690, w: 150, h: 50, name: 'Robo Gripper', sub: 'CAD · CAPSTONE',
+  { id: 'gripper',   x: 1210, y: 890, w: 150, h: 50, name: 'Robo Gripper', sub: 'CAD · CAPSTONE', type: 'capstone',
     skill: 'Read technical drawings, reproduce part to spec' },
 ];
 
-// ============ EDGES ============
-// (from, to, thread)
-// Six thread types:
-//   prereq    — hard prerequisite (Lesson B literally needs Lesson A)
-//   cad       — CAD ladder (sequenced skill progression)
-//   fab       — LightBurn ladder
-//   concept   — concept revisit (idea taught, returns later)
-//   mode      — mechanical iteration mode of work
-//   pedagogy  — constructivist discovery
 const EDGES = [
-  // HARD PREREQUISITES
+
   { from: 'stencil',   to: 'bleach',    thread: 'prereq', label: 'Stencil cuts feed Bleach' },
   { from: 'robounit1', to: 'bucky',     thread: 'prereq', label: 'VEX EXP build & drive required' },
-  { from: 'catapult',  to: 'bucky',     thread: 'prereq', label: 'Mechanical launcher iteration required' },
 
-  // CAD LADDER (explicit, sequenced)
   { from: 'dice',      to: 'spinner',   thread: 'cad' },
   { from: 'spinner',   to: 'dnm',       thread: 'cad' },
   { from: 'dnm',       to: 'gripper',   thread: 'cad' },
 
-  // LIGHTBURN LADDER (explicit, sequenced)
   { from: 'laser',     to: 'stencil',   thread: 'fab' },
   { from: 'stencil',   to: 'souvenir',  thread: 'fab' },
   { from: 'souvenir',  to: 'puzzle',    thread: 'fab' },
 
-  // CONCEPT REVISITS (implicit — Connect candidates)
-  { from: 'proof',     to: 'rubber',    thread: 'concept', label: 'V=D/T: only revisit all year' },
+  { from: 'proof',     to: 'rubber',    thread: 'concept', label: 'V=D/T' },
   { from: 'elec',      to: 'piezo',     thread: 'concept', label: 'Multimeter callback' },
   { from: 'spheri',    to: 'piezo',     thread: 'concept', label: 'Crystallization measurement' },
   { from: 'spinner',   to: 'rubber',    thread: 'concept', label: 'Iteration loop concept' },
   { from: 'catapult',  to: 'bucky',     thread: 'concept', label: 'Projectile / launcher mechanism' },
-  { from: 'gripper',   to: 'robounit1', thread: 'concept', label: 'Read someone else\'s spec' },
+  { from: 'gripper',   to: 'robounit1', thread: 'concept', label: 'Reads technical spec' },
 
-  // MECHANICAL ITERATION (mode of work — implicit thread, the program spine)
   { from: 'bugbots',   to: 'catapult',  thread: 'mode' },
   { from: 'catapult',  to: 'rubber',    thread: 'mode' },
   { from: 'catapult',  to: 'judo',      thread: 'mode' },
   { from: 'rubber',    to: 'judo',      thread: 'mode' },
   { from: 'judo',      to: 'bucky',     thread: 'mode' },
-  { from: 'spheri',    to: 'catapult',  thread: 'mode' },  // controlled-variable iteration, links chem to eng
-  { from: 'ln2',       to: 'spheri',    thread: 'mode' },  // 1-var to 3-var step
+  { from: 'spheri',    to: 'catapult',  thread: 'mode' },
+  { from: 'ln2',       to: 'spheri',    thread: 'mode' },
   { from: 'spheri',    to: 'judo',      thread: 'mode' },
+  { from: 'truss',     to: 'catapult',  thread: 'mode' },
 
-  // CONSTRUCTIVIST DISCOVERY (pedagogy thread)
-  { from: 'proof',     to: 'truss',     thread: 'pedagogy' },          // both fully constructivist openers
-  { from: 'proof',     to: 'spheri',    thread: 'pedagogy' },
-  { from: 'proof',     to: 'catapult',  thread: 'pedagogy' },
-  { from: 'proof',     to: 'judo',      thread: 'pedagogy' },
-  { from: 'truss',     to: 'spheri',    thread: 'pedagogy' },
-  { from: 'truss',     to: 'catapult',  thread: 'pedagogy' },
-  { from: 'truss',     to: 'judo',      thread: 'pedagogy' },
+  { from: 'rainbow',   to: 'ln2',       thread: 'concept', label: 'Precision measurement' },
+  { from: 'rainbow',   to: 'spheri',    thread: 'concept', label: 'Precision measurement' },
+  { from: 'rainbow',   to: 'bleach',    thread: 'concept', label: 'Metric + ratios' },
+  { from: 'elec',      to: 'bugbots',   thread: 'concept', label: 'Battery + motor circuit' },
+  { from: 'bleach',    to: 'judo',      thread: 'concept', label: 'Ratio reasoning' },
 ];
 
 const THREAD_LABELS = {
@@ -1286,14 +1600,12 @@ const THREAD_LABELS = {
   fab:       'LightBurn ladder',
   concept:   'Concept revisit',
   mode:      'Mechanical iteration',
-  pedagogy:  'Constructivist pedagogy',
 };
 
-// Visibility state
-const visibleThreads = new Set(['prereq','cad','fab','concept','mode','pedagogy']);
+const visibleThreads = new Set(['prereq','cad','fab','concept','mode']);
 
-// ============ RENDERING ============
 const svg = document.getElementById('map');
+const VBW = svg.viewBox.baseVal.width || 1620, VBH = svg.viewBox.baseVal.height || 1010;
 const edgesGroup = document.getElementById('edges');
 const nodesGroup = document.getElementById('nodes');
 
@@ -1301,7 +1613,7 @@ function nodeCenter(node) {
   return { x: node.x + node.w/2, y: node.y + node.h/2 };
 }
 function nodeAnchor(from, to) {
-  // Compute anchor on the rectangle border closest to the line direction
+
   const fc = nodeCenter(from);
   const tc = nodeCenter(to);
   const dx = tc.x - fc.x;
@@ -1318,14 +1630,14 @@ function nodeAnchor(from, to) {
 function bezierPath(from, to) {
   const a = nodeAnchor(from, to);
   const b = nodeAnchor(to, from);
-  // Mild curve — use a control point perpendicular to midpoint
+
   const mx = (a.x + b.x) / 2;
   const my = (a.y + b.y) / 2;
   const dx = b.x - a.x;
   const dy = b.y - a.y;
   const len = Math.sqrt(dx*dx + dy*dy);
   if (len === 0) return `M${a.x},${a.y} L${b.x},${b.y}`;
-  // Perpendicular offset, scaled to distance, gentle curve
+
   const nx = -dy / len;
   const ny = dx / len;
   const offset = Math.min(40, len * 0.12);
@@ -1343,10 +1655,9 @@ function renderEdges() {
     const from = nodeById[e.from];
     const to = nodeById[e.to];
     if (!from || !to) return;
-    if (!e.id) e.id = 'b_' + i; // stable id for built-in edges
+    if (!e.id) e.id = 'b_' + i;
     const d = bezierPath(from, to);
 
-    // Visible path
     const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
     path.setAttribute('class', 'edge ' + e.thread);
     path.setAttribute('d', d);
@@ -1356,10 +1667,12 @@ function renderEdges() {
     path.setAttribute('data-edge-id', e.id);
     path.setAttribute('data-edge-kind', 'builtin');
     path.dataset.idx = i;
+    if (e.thread === 'prereq' || e.thread === 'cad' || e.thread === 'fab') {
+      path.setAttribute('marker-end', 'url(#arrow-' + e.thread + ')');
+    }
     if (!visibleThreads.has(e.thread)) path.classList.add('hidden');
     edgesGroup.appendChild(path);
 
-    // Invisible hit-area (thicker, captures clicks)
     const hit = document.createElementNS('http://www.w3.org/2000/svg', 'path');
     hit.setAttribute('class', 'edge-hit');
     hit.setAttribute('d', d);
@@ -1384,18 +1697,9 @@ function renderNodes() {
     rect.setAttribute('height', n.h);
     g.appendChild(rect);
 
-    if (n.star) {
-      const star = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-      star.setAttribute('class', 'node-star');
-      star.setAttribute('x', 10);
-      star.setAttribute('y', 22);
-      star.textContent = '★';
-      g.appendChild(star);
-    }
-
     const title = document.createElementNS('http://www.w3.org/2000/svg', 'text');
     title.setAttribute('class', 'node-title' + (n.type === 'capstone' ? ' bold' : ''));
-    title.setAttribute('x', n.star ? 26 : 12);
+    title.setAttribute('x', 12);
     title.setAttribute('y', 22);
     title.textContent = n.name;
     g.appendChild(title);
@@ -1411,33 +1715,33 @@ function renderNodes() {
       if (!stringMode.active && !dragState.active) focusNode(n.id);
     });
     g.addEventListener('mouseleave', () => {
-      if (!stringMode.active && !dragState.active) unfocus();
+      if (!stringMode.active && !dragState.active) {
+        if (pinnedId) focusNode(pinnedId); else unfocus();
+      }
     });
     g.addEventListener('click', (e) => {
-      // Suppress click if we just dragged
+
       if (dragState.justDragged) {
         dragState.justDragged = false;
         return;
       }
-      if (stringMode.active) handleStringClick(n.id);
-      else showDetail(n.id);
+      if (stringMode.active) { handleStringClick(n.id); return; }
+
+      if (pinnedId === n.id) { pinnedId = null; unfocus(); }
+      else { pinnedId = n.id; focusNode(n.id); }
     });
 
-    // Pointer-based drag (works for mouse + touch)
     g.addEventListener('pointerdown', (e) => onNodePointerDown(e, n.id));
 
     nodesGroup.appendChild(g);
   });
 }
 
-// Capture originals (deep clones) for full reset. This must happen BEFORE any localStorage load
-// or any edits, so we always have a clean reference of the original built-in state.
 const ORIGINAL_POSITIONS = {};
 NODES.forEach(n => { ORIGINAL_POSITIONS[n.id] = { x: n.x, y: n.y }; });
 const ORIGINAL_NODES_JSON = JSON.stringify(NODES);
 const ORIGINAL_EDGES_JSON = JSON.stringify(EDGES);
 
-// Load saved positions from localStorage (mutates NODES if any saved).
 (function loadNodePositionsAtStartup() {
   try {
     const raw = localStorage.getItem('tetc_concept_map_node_positions_v1');
@@ -1449,23 +1753,21 @@ const ORIGINAL_EDGES_JSON = JSON.stringify(EDGES);
   } catch (e) {}
 })();
 
-// Load edited NODES (rename, descriptions, deletes, additions)
 (function loadEditedNodesAtStartup() {
   try {
     const raw = localStorage.getItem('tetc_concept_map_nodes_v1');
     if (!raw) return;
     const saved = JSON.parse(raw);
     if (!Array.isArray(saved)) return;
-    // Replace the in-memory NODES array contents with the saved version
+
     NODES.length = 0;
     saved.forEach(n => NODES.push(n));
-    // Rebuild the lookup
+
     Object.keys(nodeById).forEach(k => delete nodeById[k]);
     NODES.forEach(n => { nodeById[n.id] = n; });
   } catch (e) {}
 })();
 
-// Load edited EDGES (built-in edges that were modified or deleted)
 (function loadEditedEdgesAtStartup() {
   try {
     const raw = localStorage.getItem('tetc_concept_map_edges_v1');
@@ -1484,25 +1786,40 @@ function saveEditedEdges() {
   try { localStorage.setItem('tetc_concept_map_edges_v1', JSON.stringify(EDGES)); } catch (e) {}
 }
 
+(function sanitizeRemovals() {
+  NODES.forEach(n => {
+    delete n.star;
+    if (n.type === 'pedagogy') delete n.type;
+    if (typeof n.sub === 'string') {
+      n.sub = n.sub.replace(/★/g, '').replace(/·\s*·/g, '·')
+                   .replace(/·\s*$/, '').replace(/\s{2,}/g, ' ').trim();
+    }
+  });
+  for (let i = EDGES.length - 1; i >= 0; i--) {
+    if (EDGES[i].thread === 'pedagogy') EDGES.splice(i, 1);
+  }
+})();
+
 renderEdges();
 renderNodes();
 
-// ============ HOVER FOCUS ============
 function focusNode(id) {
   svg.classList.add('has-focus');
   const groups = nodesGroup.querySelectorAll('.node-group');
-  const edges = svg.querySelectorAll('.edge'); // include both built-in and user-added
-  groups.forEach(g => {
-    g.classList.remove('focused', 'connected');
-  });
+  const edges = svg.querySelectorAll('.edge');
+  groups.forEach(g => g.classList.remove('focused', 'connected', 'pinned'));
   edges.forEach(e => e.classList.remove('related'));
+  clearEdgeLabels();
 
-  // Mark focused node
   const focused = nodesGroup.querySelector(`.node-group[data-id="${id}"]`);
-  if (focused) focused.classList.add('focused');
+  if (focused) {
+    focused.classList.add('focused');
+    if (pinnedId === id) focused.classList.add('pinned');
+  }
 
   const connectedIds = new Set([id]);
-  // Edges that touch this node — but only if the thread is visible
+  const relatedEdges = [];
+
   edges.forEach(e => {
     const from = e.dataset.from;
     const to = e.dataset.to;
@@ -1511,31 +1828,49 @@ function focusNode(id) {
       e.classList.add('related');
       connectedIds.add(from);
       connectedIds.add(to);
+      relatedEdges.push(e);
     }
   });
+
+  if (typeof traceMode !== 'undefined' && traceMode) {
+    const chain = traceChain(id);
+    chain.forEach(cid => connectedIds.add(cid));
+    edges.forEach(e => {
+      const thread = e.dataset.thread;
+      if (!['prereq', 'cad', 'fab'].includes(thread)) return;
+      if (!visibleThreads.has(thread)) return;
+      if (connectedIds.has(e.dataset.from) && connectedIds.has(e.dataset.to)) {
+        if (!e.classList.contains('related')) {
+          e.classList.add('related');
+          relatedEdges.push(e);
+        }
+      }
+    });
+  }
+
   groups.forEach(g => {
     if (connectedIds.has(g.dataset.id) && g.dataset.id !== id) {
       g.classList.add('connected');
     }
   });
+  renderEdgeLabelsFor(relatedEdges);
   showDetail(id);
 }
 function unfocus() {
   svg.classList.remove('has-focus');
   nodesGroup.querySelectorAll('.node-group').forEach(g => {
-    g.classList.remove('focused', 'connected');
+    g.classList.remove('focused', 'connected', 'pinned');
   });
   svg.querySelectorAll('.edge').forEach(e => e.classList.remove('related'));
+  clearEdgeLabels();
 }
 
-// ============ DETAIL PANEL ============
 const detail = document.getElementById('detail');
 function showDetail(id) {
   const n = nodeById[id];
   if (!n) return;
   detail.classList.remove('empty');
 
-  // Other lessons connected to this one (built-in + user, limited to visible threads)
   const connections = {};
   const allEdges = EDGES.concat(typeof userStrings !== 'undefined' ? userStrings : []);
   allEdges.forEach(e => {
@@ -1577,14 +1912,12 @@ function showDetail(id) {
       <button class="detail-action-btn danger" data-delete-id="${id}">Delete</button>
     </div>
   `;
-  // Wire up the buttons
   const editBtn = detail.querySelector('[data-edit-id]');
   const delBtn = detail.querySelector('[data-delete-id]');
   if (editBtn) editBtn.addEventListener('click', () => openLessonEditor(id));
   if (delBtn) delBtn.addEventListener('click', () => confirmDeleteLesson(id));
 }
 
-// ============ THREAD FILTERS ============
 document.querySelectorAll('.thread-btn[data-thread]').forEach(btn => {
   btn.addEventListener('click', () => {
     const t = btn.dataset.thread;
@@ -1602,8 +1935,9 @@ document.querySelectorAll('.thread-btn[data-thread]').forEach(btn => {
       if (visibleThreads.has(thread)) e.classList.remove('hidden');
       else e.classList.add('hidden');
     });
-    // Update toggle-all button label
+
     document.getElementById('toggle-all').textContent = visibleThreads.size === 0 ? 'Show all' : 'Hide all';
+    if (typeof renderAudit === 'function') renderAudit();
   });
 });
 
@@ -1617,7 +1951,7 @@ document.getElementById('toggle-all').addEventListener('click', () => {
     svg.querySelectorAll('.edge').forEach(e => e.classList.add('hidden'));
     document.getElementById('toggle-all').textContent = 'Show all';
   } else {
-    ['prereq','cad','fab','concept','mode','pedagogy'].forEach(t => visibleThreads.add(t));
+    ['prereq','cad','fab','concept','mode'].forEach(t => visibleThreads.add(t));
     document.querySelectorAll('.thread-btn[data-thread]').forEach(b => {
       b.classList.add('active');
       b.classList.remove('dim');
@@ -1625,19 +1959,19 @@ document.getElementById('toggle-all').addEventListener('click', () => {
     svg.querySelectorAll('.edge').forEach(e => e.classList.remove('hidden'));
     document.getElementById('toggle-all').textContent = 'Hide all';
   }
+  if (typeof renderAudit === 'function') renderAudit();
 });
 
-// ============ NODE DRAGGING ============
 const POSITION_KEY = 'tetc_concept_map_node_positions_v1';
 const dragState = {
   active: false,
-  justDragged: false,   // suppresses next click after a drag
+  justDragged: false,
   nodeId: null,
-  startX: 0, startY: 0,         // pointer position at start (in SVG coords)
-  origNodeX: 0, origNodeY: 0,   // node position at start
+  startX: 0, startY: 0,
+  origNodeX: 0, origNodeY: 0,
   pointerId: null,
 };
-const DRAG_THRESHOLD = 5; // pixels of movement before we treat as drag
+const DRAG_THRESHOLD = 5;
 
 function saveNodePositions() {
   const out = {};
@@ -1645,7 +1979,6 @@ function saveNodePositions() {
   try { localStorage.setItem(POSITION_KEY, JSON.stringify(out)); } catch (e) {}
 }
 
-// Convert client (page) coords to SVG viewBox coords
 function clientToSvg(clientX, clientY) {
   const pt = svg.createSVGPoint();
   pt.x = clientX;
@@ -1657,13 +1990,13 @@ function clientToSvg(clientX, clientY) {
 }
 
 function onNodePointerDown(e, id) {
-  // Don't initiate drag in string mode (let the click pick the node instead)
+
   if (stringMode.active) return;
   e.preventDefault();
   const node = nodeById[id];
   if (!node) return;
-  const { x, y } = clientToSvg(e.clientX, e.clientY);
-  dragState.active = false; // not yet a drag — wait for movement past threshold
+  const { x, y } = clientToContent(e.clientX, e.clientY);
+  dragState.active = false;
   dragState.justDragged = false;
   dragState.nodeId = id;
   dragState.startX = x;
@@ -1672,9 +2005,8 @@ function onNodePointerDown(e, id) {
   dragState.origNodeY = node.y;
   dragState.pointerId = e.pointerId;
 
-  // Capture the pointer so we keep getting events even if it leaves the node
   try { e.target.setPointerCapture(e.pointerId); } catch (_) {}
-  // Listen on the SVG for movement and release
+
   svg.addEventListener('pointermove', onPointerMove);
   svg.addEventListener('pointerup', onPointerUp);
   svg.addEventListener('pointercancel', onPointerUp);
@@ -1683,31 +2015,31 @@ function onNodePointerDown(e, id) {
 function onPointerMove(e) {
   if (!dragState.nodeId) return;
   if (e.pointerId !== dragState.pointerId) return;
-  const { x, y } = clientToSvg(e.clientX, e.clientY);
+  const { x, y } = clientToContent(e.clientX, e.clientY);
   const dx = x - dragState.startX;
   const dy = y - dragState.startY;
   if (!dragState.active) {
-    // Check threshold
+
     if (Math.hypot(dx, dy) < DRAG_THRESHOLD) return;
-    // Now we're officially dragging
+
     dragState.active = true;
     document.querySelector('.map-wrap').classList.add('dragging-active');
     const nodeEl = nodesGroup.querySelector(`.node-group[data-id="${dragState.nodeId}"]`);
     if (nodeEl) nodeEl.classList.add('dragging');
-    // Suppress focus/hover during drag
+
     unfocus();
   }
-  // Update node position
+
   const node = nodeById[dragState.nodeId];
   node.x = dragState.origNodeX + dx;
   node.y = dragState.origNodeY + dy;
-  // Constrain to viewBox roughly (don't drag off screen)
-  node.x = Math.max(0, Math.min(1500 - node.w, node.x));
-  node.y = Math.max(0, Math.min(760 - node.h, node.y));
-  // Apply transform
+
+  node.x = Math.max(0, Math.min(VBW - node.w, node.x));
+  node.y = Math.max(0, Math.min(VBH - node.h, node.y));
+
   const nodeEl = nodesGroup.querySelector(`.node-group[data-id="${dragState.nodeId}"]`);
   if (nodeEl) nodeEl.setAttribute('transform', `translate(${node.x}, ${node.y})`);
-  // Redraw connected edges (only ones touching this node)
+
   redrawEdgesForNode(dragState.nodeId);
 }
 
@@ -1721,7 +2053,8 @@ function onPointerUp(e) {
   if (nodeEl) nodeEl.classList.remove('dragging');
   if (dragState.active) {
     saveNodePositions();
-    dragState.justDragged = true; // suppress the click that follows
+    renderIterationCore();
+    dragState.justDragged = true;
   }
   dragState.active = false;
   dragState.nodeId = null;
@@ -1729,7 +2062,7 @@ function onPointerUp(e) {
 }
 
 function redrawEdgesForNode(id) {
-  // Built-in edges
+
   EDGES.forEach((edge, i) => {
     if (edge.from !== id && edge.to !== id) return;
     const path = edgesGroup.querySelector(`path[data-from="${edge.from}"][data-to="${edge.to}"]`);
@@ -1738,7 +2071,7 @@ function redrawEdgesForNode(id) {
     const to = nodeById[edge.to];
     if (from && to) path.setAttribute('d', bezierPath(from, to));
   });
-  // User edges
+
   userStrings.forEach(s => {
     if (s.from !== id && s.to !== id) return;
     const path = userEdgesGroup.querySelector(`path[data-user-id="${s.id}"]`);
@@ -1749,7 +2082,6 @@ function redrawEdgesForNode(id) {
   });
 }
 
-// Reset positions handler (ORIGINAL_POSITIONS was captured at startup, before any loading)
 document.getElementById('reset-positions-btn').addEventListener('click', () => {
   if (!confirm('Reset all lesson positions to the default layout? Your strings will not be affected.')) return;
   NODES.forEach(n => {
@@ -1759,21 +2091,20 @@ document.getElementById('reset-positions-btn').addEventListener('click', () => {
     }
   });
   saveNodePositions();
-  // Re-render everything so positions update
+
   renderEdges();
   renderNodes();
   renderUserEdges();
-  // Re-attach hidden state on edges
+
   svg.querySelectorAll('.edge').forEach(e => {
     if (!visibleThreads.has(e.dataset.thread)) e.classList.add('hidden');
   });
 });
 
-// ============ STRING-ADDING MODE ============
 const STORAGE_KEY = 'tetc_concept_map_user_strings_v1';
 const userEdgesGroup = document.getElementById('user-edges');
 const stringMode = { active: false, firstId: null };
-let userStrings = []; // { id, from, to, thread, label, createdAt }
+let userStrings = [];
 
 function loadUserStrings() {
   try {
@@ -1793,7 +2124,6 @@ function renderUserEdges() {
     if (!from || !to) return;
     const d = bezierPath(from, to);
 
-    // Visible path
     const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
     path.setAttribute('class', 'edge user-string ' + s.thread);
     path.setAttribute('d', d);
@@ -1811,7 +2141,6 @@ function renderUserEdges() {
     }
     userEdgesGroup.appendChild(path);
 
-    // Hit-area
     const hit = document.createElementNS('http://www.w3.org/2000/svg', 'path');
     hit.setAttribute('class', 'edge-hit');
     hit.setAttribute('d', d);
@@ -1861,7 +2190,6 @@ function escapeHtml(s) {
     .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
-// String-mode toggle
 function setStringMode(on) {
   stringMode.active = on;
   stringMode.firstId = null;
@@ -1874,7 +2202,7 @@ function setStringMode(on) {
     status.style.display = 'flex';
     document.querySelector('#add-string-status .status-text').textContent =
       'String mode: click first lesson';
-    unfocus(); // clear any hover state
+    unfocus();
   } else {
     svg.classList.remove('string-mode');
     btn.classList.remove('active');
@@ -1895,14 +2223,14 @@ function handleStringClick(id) {
       `From "${fromName}" — now click second lesson`;
   } else {
     if (id === stringMode.firstId) {
-      // Re-clicked same node — cancel that pick
+
       stringMode.firstId = null;
       nodesGroup.querySelectorAll('.node-group.first-pick').forEach(g => g.classList.remove('first-pick'));
       document.querySelector('#add-string-status .status-text').textContent =
         'String mode: click first lesson';
       return;
     }
-    // Open picker
+
     openPicker(stringMode.firstId, id);
   }
 }
@@ -1914,7 +2242,6 @@ document.getElementById('add-string-cancel').addEventListener('click', () => {
   setStringMode(false);
 });
 
-// Picker modal
 const pickerOverlay = document.getElementById('picker-overlay');
 const pickerSummary = document.getElementById('picker-summary');
 const pickerLabel = document.getElementById('picker-label');
@@ -1954,7 +2281,7 @@ document.querySelectorAll('.picker-thread').forEach(btn => {
 
 pickerCancel.addEventListener('click', () => {
   closePicker();
-  // Reset string mode to "click first" state
+
   stringMode.firstId = null;
   nodesGroup.querySelectorAll('.node-group.first-pick').forEach(g => g.classList.remove('first-pick'));
   if (stringMode.active) {
@@ -1978,7 +2305,7 @@ pickerAdd.addEventListener('click', () => {
   renderUserEdges();
   renderStringsList();
   closePicker();
-  // Stay in string mode for fast successive adds, but reset first-pick
+
   stringMode.firstId = null;
   nodesGroup.querySelectorAll('.node-group.first-pick').forEach(g => g.classList.remove('first-pick'));
   if (stringMode.active) {
@@ -1987,7 +2314,6 @@ pickerAdd.addEventListener('click', () => {
   }
 });
 
-// Click outside picker dismisses
 pickerOverlay.addEventListener('click', (e) => {
   if (e.target === pickerOverlay) {
     closePicker();
@@ -2000,7 +2326,6 @@ pickerOverlay.addEventListener('click', (e) => {
   }
 });
 
-// Escape key dismisses
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') {
     if (pickerOverlay.style.display === 'flex') {
@@ -2011,7 +2336,6 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
-// Clear all
 document.getElementById('clear-strings-btn').addEventListener('click', () => {
   if (userStrings.length === 0) return;
   if (!confirm(`Delete all ${userStrings.length} of your strings? This cannot be undone.`)) return;
@@ -2022,7 +2346,6 @@ document.getElementById('clear-strings-btn').addEventListener('click', () => {
   document.getElementById('strings-export-output').classList.remove('visible');
 });
 
-// Export
 document.getElementById('export-strings-btn').addEventListener('click', () => {
   const out = document.getElementById('strings-export-output');
   if (userStrings.length === 0) {
@@ -2036,13 +2359,13 @@ document.getElementById('export-strings-btn').addEventListener('click', () => {
     `Total: ${userStrings.length} string(s)`,
     '',
   ];
-  // Group by thread
+
   const byThread = {};
   userStrings.forEach(s => {
     if (!byThread[s.thread]) byThread[s.thread] = [];
     byThread[s.thread].push(s);
   });
-  ['prereq','cad','fab','concept','mode','pedagogy'].forEach(t => {
+  ['prereq','cad','fab','concept','mode'].forEach(t => {
     if (!byThread[t]) return;
     lines.push(THREAD_LABELS[t].toUpperCase());
     lines.push('-'.repeat(40));
@@ -2059,14 +2382,12 @@ document.getElementById('export-strings-btn').addEventListener('click', () => {
   out.scrollIntoView({ behavior: 'smooth', block: 'end' });
 });
 
-// Initialize from saved state
 loadUserStrings();
+userStrings = userStrings.filter(s => s.thread !== 'pedagogy');
+saveUserStrings();
 renderUserEdges();
 renderStringsList();
 
-// ============ EDITING: LESSONS, EDGES, AND RESET-ALL ============
-
-// ============ LESSON EDITOR ============
 const lessonEditorOverlay = document.getElementById('lesson-editor-overlay');
 const leName = document.getElementById('le-name');
 const leSub = document.getElementById('le-sub');
@@ -2078,7 +2399,7 @@ const leDeleteBtn = document.getElementById('le-delete');
 const leDeleteZone = document.getElementById('le-delete-zone');
 const leTitle = document.getElementById('lesson-editor-title');
 
-let editingLessonId = null;     // null = adding new
+let editingLessonId = null;
 let editingLessonMarker = 'none';
 
 function openLessonEditor(id) {
@@ -2147,7 +2468,7 @@ leSaveBtn.addEventListener('click', () => {
   const marker = editingLessonMarker;
 
   if (editingLessonId) {
-    // Edit existing
+
     const node = nodeById[editingLessonId];
     if (!node) { closeLessonEditor(); return; }
     node.name = name;
@@ -2157,11 +2478,11 @@ leSaveBtn.addEventListener('click', () => {
     else if (marker === 'capstone') { node.type = 'capstone'; node.star = true; }
     else { delete node.type; delete node.star; }
   } else {
-    // Add new
+
     const id = 'n_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6);
     const newNode = {
       id, name, sub, skill,
-      x: 600, y: 360,   // center of viewBox
+      x: 600, y: 360,
       w: Math.max(140, Math.min(220, name.length * 8 + 40)),
       h: 50,
     };
@@ -2172,7 +2493,7 @@ leSaveBtn.addEventListener('click', () => {
   }
   saveEditedNodes();
   saveNodePositions();
-  // Re-render
+
   renderEdges();
   renderNodes();
   renderUserEdges();
@@ -2209,33 +2530,32 @@ leDeleteBtn.addEventListener('click', () => {
 });
 
 function deleteLesson(id) {
-  // Remove the node
+
   const idx = NODES.findIndex(n => n.id === id);
   if (idx === -1) return;
   NODES.splice(idx, 1);
   delete nodeById[id];
-  // Remove all built-in edges touching it
+
   for (let i = EDGES.length - 1; i >= 0; i--) {
     if (EDGES[i].from === id || EDGES[i].to === id) EDGES.splice(i, 1);
   }
-  // Remove all user strings touching it
+
   userStrings = userStrings.filter(s => s.from !== id && s.to !== id);
   saveEditedNodes();
   saveEditedEdges();
   saveUserStrings();
-  // Re-render everything
+
   renderEdges();
   renderNodes();
   renderUserEdges();
   renderStringsList();
   applyVisibilityToAllEdges();
-  // Clear detail panel
+
   const detail = document.getElementById('detail');
   detail.classList.add('empty');
   detail.innerHTML = 'Hover a lesson to see its threads. Click a thread filter above to isolate one connection type.';
 }
 
-// Click outside / Escape to dismiss editor
 lessonEditorOverlay.addEventListener('click', (e) => {
   if (e.target === lessonEditorOverlay) closeLessonEditor();
 });
@@ -2245,7 +2565,6 @@ document.addEventListener('keydown', (e) => {
 
 document.getElementById('add-lesson-btn').addEventListener('click', openAddLessonEditor);
 
-// ============ EDGE POPOVER (click any line) ============
 const edgePopover = document.getElementById('edge-popover');
 const edgePopoverHeader = document.getElementById('edge-popover-header');
 const edgePopoverMeta = document.getElementById('edge-popover-meta');
@@ -2255,11 +2574,11 @@ const edgePopoverDelete = document.getElementById('edge-popover-delete');
 const edgePopoverCancel = document.getElementById('edge-popover-cancel');
 const edgePopoverSave = document.getElementById('edge-popover-save');
 
-let editingEdge = null; // { id, kind: 'builtin'|'user', thread, label }
+let editingEdge = null;
 
 function buildPopoverThreadOptions() {
   edgePopoverThreads.innerHTML = '';
-  ['prereq','cad','fab','concept','mode','pedagogy'].forEach(t => {
+  ['prereq','cad','fab','concept','mode'].forEach(t => {
     const btn = document.createElement('button');
     btn.className = t;
     btn.dataset.thread = t;
@@ -2291,13 +2610,11 @@ function onEdgeClick(ev, edgeId, kind) {
   edgePopoverMeta.textContent = (kind === 'user' ? 'Added by you · ' : 'Built-in · ') + THREAD_LABELS[edge.thread];
   edgePopoverLabel.value = edge.label || '';
 
-  // Mark current thread
   edgePopoverThreads.querySelectorAll('button').forEach(b => {
     b.classList.remove('selected','prereq','cad','fab','concept','mode','pedagogy');
     if (b.dataset.thread === edge.thread) b.classList.add('selected', edge.thread);
   });
 
-  // Position the popover near click, but keep on screen
   const padding = 12;
   const popW = 320;
   const popH = 280;
@@ -2360,7 +2677,6 @@ edgePopoverDelete.addEventListener('click', () => {
   closeEdgePopover();
 });
 
-// Close popover on outside click or Escape
 document.addEventListener('click', (e) => {
   if (edgePopover.classList.contains('visible')) {
     if (!edgePopover.contains(e.target) && !e.target.classList.contains('edge-hit')) {
@@ -2372,7 +2688,6 @@ document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape' && edgePopover.classList.contains('visible')) closeEdgePopover();
 });
 
-// Helper: re-apply thread visibility (called after re-renders so saved filter state is preserved)
 function applyVisibilityToAllEdges() {
   svg.querySelectorAll('.edge').forEach(edgeEl => {
     const thread = edgeEl.dataset.thread;
@@ -2381,11 +2696,9 @@ function applyVisibilityToAllEdges() {
   });
 }
 
-// ============ RESET ALL ============
 document.getElementById('reset-all-btn').addEventListener('click', () => {
   if (!confirm('Reset everything to the original state?\n\nThis will:\n• Restore the original 22 lessons\n• Restore the original built-in connections\n• Reset positions to defaults\n• Delete ALL strings you added\n\nThis cannot be undone.')) return;
 
-  // Clear all the persisted edits
   try {
     localStorage.removeItem('tetc_concept_map_node_positions_v1');
     localStorage.removeItem('tetc_concept_map_nodes_v1');
@@ -2393,7 +2706,6 @@ document.getElementById('reset-all-btn').addEventListener('click', () => {
     localStorage.removeItem('tetc_concept_map_user_strings_v1');
   } catch (e) {}
 
-  // Restore in-memory state
   const originalNodes = JSON.parse(ORIGINAL_NODES_JSON);
   NODES.length = 0;
   originalNodes.forEach(n => NODES.push(n));
@@ -2406,18 +2718,366 @@ document.getElementById('reset-all-btn').addEventListener('click', () => {
 
   userStrings = [];
 
-  // Re-render everything
   renderEdges();
   renderNodes();
   renderUserEdges();
   renderStringsList();
   applyVisibilityToAllEdges();
 
-  // Clear detail panel
   const detail = document.getElementById('detail');
   detail.classList.add('empty');
   detail.innerHTML = 'Hover a lesson to see its threads. Click a thread filter above to isolate one connection type.';
+  renderAudit();
 });
+
+let pinnedId = null;
+let traceMode = false;
+const view = { tx: 0, ty: 0, k: 1 };
+const K_MIN = 0.45, K_MAX = 3;
+const viewportGroup = document.getElementById('viewport');
+
+function clampK(k) { return Math.max(K_MIN, Math.min(K_MAX, k)); }
+
+function clientToContent(clientX, clientY) {
+  const pt = svg.createSVGPoint();
+  pt.x = clientX; pt.y = clientY;
+  const ctm = viewportGroup.getScreenCTM();
+  if (!ctm) return { x: clientX, y: clientY };
+  const local = pt.matrixTransform(ctm.inverse());
+  return { x: local.x, y: local.y };
+}
+
+function applyView() {
+  viewportGroup.setAttribute('transform',
+    `translate(${view.tx.toFixed(2)}, ${view.ty.toFixed(2)}) scale(${view.k.toFixed(4)})`);
+}
+
+function zoomAt(factor, clientX, clientY) {
+  const vb = clientToSvg(clientX, clientY);
+  const px = (vb.x - view.tx) / view.k;
+  const py = (vb.y - view.ty) / view.k;
+  view.k = clampK(view.k * factor);
+  view.tx = vb.x - px * view.k;
+  view.ty = vb.y - py * view.k;
+  applyView();
+}
+function zoomAtCenter(factor) {
+  const r = svg.getBoundingClientRect();
+  zoomAt(factor, r.left + r.width / 2, r.top + r.height / 2);
+}
+function fitView() {
+  if (!NODES.length) return;
+  let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+  NODES.forEach(n => {
+    minX = Math.min(minX, n.x); minY = Math.min(minY, n.y);
+    maxX = Math.max(maxX, n.x + n.w); maxY = Math.max(maxY, n.y + n.h);
+  });
+  const pad = 50;
+  const bw = (maxX - minX) + pad * 2;
+  const bh = (maxY - minY) + pad * 2;
+  view.k = clampK(Math.min(1, Math.min(VBW / bw, VBH / bh)));
+  const cx = (minX + maxX) / 2, cy = (minY + maxY) / 2;
+  view.tx = VBW / 2 - cx * view.k;
+  view.ty = VBH / 2 - cy * view.k;
+  applyView();
+}
+function centerOnNode(id) {
+  const n = nodeById[id]; if (!n) return;
+  if (view.k < 0.85) view.k = 1;
+  const cx = n.x + n.w / 2, cy = n.y + n.h / 2;
+  view.tx = VBW / 2 - cx * view.k;
+  view.ty = VBH / 2 - cy * view.k;
+  applyView();
+}
+
+svg.addEventListener('wheel', (e) => {
+  if (!e.ctrlKey && !e.metaKey) return;
+  e.preventDefault();
+  let factor = Math.exp(-e.deltaY * 0.01);
+  factor = Math.max(0.8, Math.min(1.25, factor));
+  zoomAt(factor, e.clientX, e.clientY);
+}, { passive: false });
+
+document.getElementById('zoom-in').addEventListener('click', () => zoomAtCenter(1.2));
+document.getElementById('zoom-out').addEventListener('click', () => zoomAtCenter(1 / 1.2));
+document.getElementById('zoom-fit').addEventListener('click', fitView);
+
+const panState = { active: false, moved: false, pointerId: null, startVb: null, startTx: 0, startTy: 0 };
+svg.addEventListener('pointerdown', (e) => {
+  if (stringMode.active) return;
+  if (e.target.closest('.node-group')) return;
+  if (e.target.classList.contains('edge-hit')) return;
+  panState.active = true;
+  panState.moved = false;
+  panState.pointerId = e.pointerId;
+  panState.startVb = clientToSvg(e.clientX, e.clientY);
+  panState.startTx = view.tx;
+  panState.startTy = view.ty;
+  svg.classList.add('panning');
+  try { svg.setPointerCapture(e.pointerId); } catch (_) {}
+});
+svg.addEventListener('pointermove', (e) => {
+  if (!panState.active || e.pointerId !== panState.pointerId) return;
+  const vb = clientToSvg(e.clientX, e.clientY);
+  const dx = vb.x - panState.startVb.x;
+  const dy = vb.y - panState.startVb.y;
+  if (Math.hypot(dx, dy) > 3) panState.moved = true;
+  view.tx = panState.startTx + dx;
+  view.ty = panState.startTy + dy;
+  applyView();
+});
+function endPan() {
+  if (!panState.active) return;
+  panState.active = false;
+  svg.classList.remove('panning');
+}
+svg.addEventListener('pointerup', endPan);
+svg.addEventListener('pointercancel', endPan);
+
+svg.addEventListener('click', (e) => {
+  if (panState.moved) { panState.moved = false; return; }
+  if (e.target.closest('.node-group')) return;
+  if (e.target.classList.contains('edge-hit')) return;
+  if (pinnedId) { pinnedId = null; unfocus(); }
+});
+
+function directionalNeighbors(id, dir) {
+  const all = EDGES.concat(userStrings);
+  const out = [];
+  all.forEach(e => {
+    if (!['prereq', 'cad', 'fab'].includes(e.thread)) return;
+    if (!visibleThreads.has(e.thread)) return;
+    if (dir === 'down' && e.from === id) out.push(e.to);
+    if (dir === 'up' && e.to === id) out.push(e.from);
+  });
+  return out;
+}
+function traceChain(startId) {
+  const chain = new Set();
+  ['up', 'down'].forEach(dir => {
+    const stack = [startId];
+    const seen = new Set([startId]);
+    while (stack.length) {
+      const cur = stack.pop();
+      directionalNeighbors(cur, dir).forEach(n => {
+        if (!seen.has(n)) { seen.add(n); chain.add(n); stack.push(n); }
+      });
+    }
+  });
+  return chain;
+}
+document.getElementById('trace-toggle').addEventListener('click', () => {
+  traceMode = !traceMode;
+  document.getElementById('trace-toggle').classList.toggle('active', traceMode);
+  if (pinnedId) focusNode(pinnedId);
+});
+
+function clearEdgeLabels() {
+  const g = document.getElementById('edge-labels');
+  if (g) g.innerHTML = '';
+}
+function renderEdgeLabelsFor(edgeEls) {
+  const g = document.getElementById('edge-labels');
+  if (!g) return;
+  g.innerHTML = '';
+  const placed = [];
+  edgeEls.forEach(eEl => {
+    if (eEl.classList.contains('hidden')) return;
+    const id = eEl.dataset.edgeId;
+    const kind = eEl.dataset.edgeKind;
+    const rec = kind === 'user'
+      ? userStrings.find(s => s.id === id)
+      : EDGES.find(x => x.id === id);
+    if (!rec || !rec.label) return;
+    let mid;
+    try { mid = eEl.getPointAtLength(eEl.getTotalLength() / 2); }
+    catch (_) { return; }
+    if (placed.some(p => Math.hypot(p.x - mid.x, p.y - mid.y) < 22)) return;
+    placed.push(mid);
+    const text = rec.label.length > 32 ? rec.label.slice(0, 31) + '…' : rec.label;
+    const tw = text.length * 5.3 + 10;
+    const bg = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+    bg.setAttribute('class', 'edge-label-bg');
+    bg.setAttribute('x', mid.x - tw / 2);
+    bg.setAttribute('y', mid.y - 8);
+    bg.setAttribute('width', tw);
+    bg.setAttribute('height', 13);
+    bg.setAttribute('rx', 2);
+    g.appendChild(bg);
+    const t = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    t.setAttribute('class', 'edge-label-text');
+    t.setAttribute('x', mid.x);
+    t.setAttribute('y', mid.y + 2.2);
+    t.setAttribute('text-anchor', 'middle');
+    t.textContent = text;
+    g.appendChild(t);
+  });
+}
+
+const searchInput = document.getElementById('search-input');
+const searchClear = document.getElementById('search-clear');
+function applySearch() {
+  const q = searchInput.value.trim().toLowerCase();
+  searchClear.style.display = q ? 'block' : 'none';
+  if (!q) {
+    svg.classList.remove('search-active');
+    nodesGroup.querySelectorAll('.node-group').forEach(g => g.classList.remove('search-match'));
+    return;
+  }
+  svg.classList.add('search-active');
+  nodesGroup.querySelectorAll('.node-group').forEach(g => {
+    const n = nodeById[g.dataset.id];
+    const hay = ((n && n.name || '') + ' ' + (n && n.sub || '') + ' ' + (n && n.skill || '')).toLowerCase();
+    g.classList.toggle('search-match', hay.includes(q));
+  });
+}
+searchInput.addEventListener('input', applySearch);
+searchClear.addEventListener('click', () => { searchInput.value = ''; applySearch(); searchInput.focus(); });
+
+function computeAudit() {
+  const visEdges = EDGES.concat(userStrings)
+    .filter(e => visibleThreads.has(e.thread) && nodeById[e.from] && nodeById[e.to]);
+  const degree = {};
+  NODES.forEach(n => degree[n.id] = 0);
+  const threadCount = { prereq: 0, cad: 0, fab: 0, concept: 0, mode: 0, pedagogy: 0 };
+  const anySet = {}, explicitSet = {};
+  visEdges.forEach(e => {
+    degree[e.from] = (degree[e.from] || 0) + 1;
+    degree[e.to] = (degree[e.to] || 0) + 1;
+    threadCount[e.thread] = (threadCount[e.thread] || 0) + 1;
+    anySet[e.from] = anySet[e.to] = true;
+    if (['prereq', 'cad', 'fab'].includes(e.thread)) explicitSet[e.from] = explicitSet[e.to] = true;
+  });
+  const orphans = NODES.filter(n => !anySet[n.id]);
+  const implicitOnly = NODES.filter(n => anySet[n.id] && !explicitSet[n.id]);
+  const hubs = NODES.slice()
+    .sort((a, b) => (degree[b.id] || 0) - (degree[a.id] || 0))
+    .slice(0, 3)
+    .filter(n => degree[n.id] > 0);
+  return { degree, threadCount, orphans, implicitOnly, hubs, totalNodes: NODES.length, totalEdges: visEdges.length };
+}
+function renderAudit() {
+  const a = computeAudit();
+  const body = document.getElementById('audit-body');
+  if (!body) return;
+  const tcOrder = [['prereq', 'Prereq'], ['cad', 'CAD'], ['fab', 'LightBurn'],
+                   ['concept', 'Concept'], ['mode', 'Iteration']];
+  const jumpItem = (n) => `<span class="audit-item" data-jump="${n.id}">${escapeHtml(n.name)}</span>`;
+  body.innerHTML = `
+    <div class="audit-stat-grid">
+      <div class="audit-stat"><div class="num">${a.totalNodes}</div><div class="lab">Lessons</div></div>
+      <div class="audit-stat"><div class="num">${a.totalEdges}</div><div class="lab">Visible threads</div></div>
+      <div class="audit-stat"><div class="num ${a.orphans.length ? 'warn' : ''}">${a.orphans.length}</div><div class="lab">Unconnected</div></div>
+      <div class="audit-stat"><div class="num">${a.implicitOnly.length}</div><div class="lab">Implicit-only</div></div>
+    </div>
+    <div class="audit-section">
+      <h4>Threads by type</h4>
+      <div class="audit-chip-row">
+        ${tcOrder.map(([k, lab]) => `<span class="audit-item"><span class="mini-dot ${k}"></span>${lab} <span class="cnt">${a.threadCount[k] || 0}</span></span>`).join('')}
+      </div>
+    </div>
+    <div class="audit-section">
+      <h4>Most-connected lessons</h4>
+      <div class="audit-chip-row">${a.hubs.length ? a.hubs.map(n => `<span class="audit-item" data-jump="${n.id}">${escapeHtml(n.name)} <span class="cnt">${a.degree[n.id]}</span></span>`).join('') : '<span class="audit-empty">None visible</span>'}</div>
+    </div>
+    <div class="audit-section">
+      <h4>Implicit-only lessons</h4>
+      <div class="audit-chip-row">${a.implicitOnly.length ? a.implicitOnly.map(jumpItem).join('') : '<span class="audit-empty">None</span>'}</div>
+      <div class="audit-note">Connected only through concept / iteration / pedagogy — the implicit curriculum a student never sees named. These are the Connect candidates.</div>
+    </div>
+    ${a.orphans.length ? `<div class="audit-section"><h4>Unconnected lessons</h4><div class="audit-chip-row">${a.orphans.map(jumpItem).join('')}</div></div>` : ''}
+  `;
+  body.querySelectorAll('[data-jump]').forEach(el => {
+    el.addEventListener('click', () => {
+      const id = el.dataset.jump;
+      pinnedId = id;
+      focusNode(id);
+      centerOnNode(id);
+    });
+  });
+}
+
+const _origApplyVis = applyVisibilityToAllEdges;
+applyVisibilityToAllEdges = function () { _origApplyVis(); renderAudit(); };
+const _origRenderUserEdges = renderUserEdges;
+renderUserEdges = function () { _origRenderUserEdges(); renderAudit(); renderIterationCore(); };
+
+const SVGNS = 'http://www.w3.org/2000/svg';
+
+function iterationCoreIds() {
+  const s = new Set();
+  EDGES.concat(userStrings).forEach(e => {
+    if (e.thread === 'mode' && nodeById[e.from] && nodeById[e.to]) { s.add(e.from); s.add(e.to); }
+  });
+  return s;
+}
+
+function renderIterationCore() {
+  const regions = document.getElementById('regions');
+  if (!regions) return;
+  regions.innerHTML = '';
+  const ids = iterationCoreIds();
+  if (ids.size < 2) return;
+  let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+  ids.forEach(id => {
+    const n = nodeById[id];
+    minX = Math.min(minX, n.x); minY = Math.min(minY, n.y);
+    maxX = Math.max(maxX, n.x + n.w); maxY = Math.max(maxY, n.y + n.h);
+  });
+  const cx = (minX + maxX) / 2, cy = (minY + maxY) / 2;
+  const rx = (maxX - minX) / 2 + 58, ry = (maxY - minY) / 2 + 50;
+  const ell = document.createElementNS(SVGNS, 'ellipse');
+  ell.setAttribute('class', 'region-bg');
+  ell.setAttribute('cx', cx); ell.setAttribute('cy', cy);
+  ell.setAttribute('rx', rx); ell.setAttribute('ry', ry);
+  ell.addEventListener('click', (e) => { e.stopPropagation(); focusIterationCore(); });
+  regions.appendChild(ell);
+  const label = document.createElementNS(SVGNS, 'text');
+  label.setAttribute('class', 'region-label');
+  label.setAttribute('x', cx); label.setAttribute('y', minY - 14);
+  label.setAttribute('text-anchor', 'middle');
+  label.textContent = 'ITERATION CORE · ' + ids.size + ' LESSONS';
+  label.addEventListener('click', (e) => { e.stopPropagation(); focusIterationCore(); });
+  regions.appendChild(label);
+}
+
+function focusIterationCore() {
+  const ids = iterationCoreIds();
+  if (ids.size < 2) return;
+  pinnedId = null;
+  svg.classList.add('has-focus');
+  nodesGroup.querySelectorAll('.node-group').forEach(g => g.classList.remove('focused', 'connected', 'pinned'));
+  svg.querySelectorAll('.edge').forEach(e => e.classList.remove('related'));
+  clearEdgeLabels();
+  nodesGroup.querySelectorAll('.node-group').forEach(g => {
+    if (ids.has(g.dataset.id)) g.classList.add('connected');
+  });
+  const related = [];
+  svg.querySelectorAll('.edge').forEach(e => {
+    if (e.dataset.thread === 'mode' && visibleThreads.has('mode') &&
+        ids.has(e.dataset.from) && ids.has(e.dataset.to)) {
+      e.classList.add('related'); related.push(e);
+    }
+  });
+  renderEdgeLabelsFor(related);
+  const names = [...ids].map(id => nodeById[id] ? nodeById[id].name : id).sort();
+  detail.classList.remove('empty');
+  detail.innerHTML =
+    '<h3>Iteration core</h3>' +
+    '<div class="meta-row">' + ids.size + ' lessons · mechanical iteration</div>' +
+    '<div class="skill">The cluster bound by the mechanical-iteration mode of work — build, measure, refine. ' +
+    'This is the program’s connective spine, derived live from the iteration thread.</div>' +
+    '<div style="margin-top:12px; display:flex; flex-wrap:wrap; gap:6px;">' +
+    names.map(nm => '<span class="thread-chip mode" style="cursor:default;">' + escapeHtml(nm) + '</span>').join('') +
+    '</div>';
+}
+
+const _origRenderEdges = renderEdges;
+renderEdges = function () { _origRenderEdges(); renderIterationCore(); };
+
+applyView();
+renderAudit();
+renderIterationCore();
 </script>
 
 </body>
