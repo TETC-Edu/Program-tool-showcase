@@ -15,7 +15,7 @@
     --teal-deep: #0E3F4A;
     --magenta: #BD2F7F;
     --ink: #36424E;
-    --ink-soft: #6B7682;
+    --ink-soft: #5D6873;
     --paper: #FFFFFF;
     --paper-warm: #F4F6F7;
     --line: #E2E6E9;
@@ -109,16 +109,7 @@
     cursor: pointer;
     transition: all 0.12s;
   }
-  .thread-btn .swatch {
-    width: 16px;
-    height: 3px;
-    background: currentColor;
-  }
-  .thread-btn .swatch.dotted {
-    background: none;
-    border-top: 2px dotted currentColor;
-    height: 0;
-  }
+  .thread-btn .swatch-line { display: block; flex: none; }
   .thread-btn:hover { color: var(--ink); border-color: var(--ink); }
 
   .thread-btn.active.prereq { color: var(--thread-prereq); border-color: var(--thread-prereq); background: #FBEEEF; }
@@ -128,9 +119,18 @@
   .thread-btn.active.mode { color: var(--thread-mode); border-color: var(--thread-mode); background: #FCE4ED; }
   .thread-btn.active.pedagogy { color: var(--thread-pedagogy); border-color: var(--thread-pedagogy); background: #ECE4F4; }
 
-  .thread-btn.dim { opacity: 0.4; }
-  .all-toggle {
+  .thread-btn.dim { color: var(--ink-soft); border-color: var(--line); background: var(--paper-warm); }
+  .thread-btn.dim:hover { color: var(--ink); border-color: var(--ink); }
+  .thread-controls .edit-actions {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
     margin-left: auto;
+    padding-left: 14px;
+    border-left: 1px solid var(--line);
+  }
+  .all-toggle {
     background: var(--ink);
     color: var(--paper);
     border-color: var(--ink);
@@ -171,7 +171,7 @@
   .edge.prereq    { stroke: var(--thread-prereq); }
   .edge.cad       { stroke: var(--thread-cad); stroke-dasharray: 4,3; }
   .edge.fab       { stroke: var(--thread-fab); stroke-dasharray: 4,3; }
-  .edge.concept   { stroke: var(--thread-concept); stroke-dasharray: 1,4; stroke-width: 2; }
+  .edge.concept   { stroke: var(--thread-concept); stroke-dasharray: 2.5,3.5; stroke-width: 2.2; }
   .edge.mode      { stroke: var(--thread-mode); stroke-dasharray: 6,3; stroke-width: 1.4; }
   .edge.pedagogy  { stroke: var(--thread-pedagogy); stroke-dasharray: 2,3; stroke-width: 1.4; }
 
@@ -179,9 +179,11 @@
 
   svg.concept-map.has-focus .edge { opacity: 0.06; }
   svg.concept-map.has-focus .edge.related { opacity: 0.85; stroke-width: 2.5; }
-  svg.concept-map:not(.has-focus) .edge { opacity: 0.5; }
+  svg.concept-map:not(.has-focus) .edge { opacity: 0.7; }
 
   .node-group { cursor: pointer; }
+  .node-group:focus { outline: none; }
+  .node-group:focus-visible .node-rect { stroke: var(--teal); stroke-width: 2.6; }
   .node-rect {
     fill: var(--paper);
     stroke: var(--ink);
@@ -345,7 +347,6 @@
     text-transform: uppercase;
     letter-spacing: 0.08em;
     cursor: pointer;
-    margin-left: 8px;
   }
   .add-string-btn:hover { background: var(--magenta); color: white; }
   .add-string-btn.active { background: var(--magenta); color: white; }
@@ -617,6 +618,7 @@
     cursor: pointer;
     pointer-events: stroke;
   }
+  .edge-hit.hidden { display: none; }
 
   .node-group .node-rect { cursor: grab; }
   .node-group:active .node-rect { cursor: grabbing; }
@@ -682,7 +684,7 @@
   .edge.user-string.prereq    { stroke: var(--thread-prereq); stroke-dasharray: none; }
   .edge.user-string.cad       { stroke: var(--thread-cad); stroke-dasharray: 4,3; }
   .edge.user-string.fab       { stroke: var(--thread-fab); stroke-dasharray: 4,3; }
-  .edge.user-string.concept   { stroke: var(--thread-concept); stroke-dasharray: 1,4; }
+  .edge.user-string.concept   { stroke: var(--thread-concept); stroke-dasharray: 2.5,3.5; }
   .edge.user-string.mode      { stroke: var(--thread-mode); stroke-dasharray: 6,3; }
   .edge.user-string.pedagogy  { stroke: var(--thread-pedagogy); stroke-dasharray: 2,3; }
 
@@ -1026,6 +1028,8 @@
     opacity: 0.6;
   }
   .search-box .search-clear:hover { opacity: 1; color: var(--magenta); }
+  .search-box .search-count { font-family: 'JetBrains Mono', monospace; font-size: 10.5px; color: var(--ink-soft); white-space: nowrap; }
+  .search-box .search-count.none { color: var(--thread-prereq); }
 
   .util-btn {
     display: inline-flex;
@@ -1059,7 +1063,6 @@
     font-size: 10px;
     letter-spacing: 0.04em;
     color: var(--ink-soft);
-    opacity: 0.85;
     margin-left: auto;
   }
   .util-hint strong { color: var(--ink-soft); }
@@ -1186,7 +1189,8 @@
     font-family: 'Figtree', sans-serif;
   }
   .audit-item:hover { background: rgba(255,255,255,0.16); border-color: rgba(255,255,255,0.3); }
-  .audit-item .mini-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  button.audit-item { appearance: none; -webkit-appearance: none; font: inherit; font-size: 12px; font-family: 'Figtree', sans-serif; margin: 0; text-align: left; }
+  .audit-item .mini-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; box-shadow: 0 0 0 1.5px rgba(255,255,255,0.55); }
   .audit-item .mini-dot.prereq { background: var(--thread-prereq); }
   .audit-item .mini-dot.cad { background: var(--thread-cad); }
   .audit-item .mini-dot.fab { background: var(--thread-fab); }
@@ -1249,6 +1253,8 @@
   .lesson-editor input, .lesson-editor textarea, #picker-label, .label-input {
     border-radius: 10px;
   }
+  .thread-chip, .audit-item { border-radius: 999px; }
+  .picker-thread, .edge-popover-thread-options button, .lesson-editor .marker-options button { border-radius: 10px; }
 
   .map-wrap {
     border: 1px solid var(--line);
@@ -1278,6 +1284,40 @@
   .reading-guide strong { color: var(--magenta); }
 
   .thread-btn { border-width: 1.5px; font-weight: 500; }
+
+  .pin-badge {
+    display: inline-block;
+    margin: 2px 0 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9.5px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--teal);
+  }
+  .pin-badge.soft { color: var(--ink-soft); }
+
+  @media (max-width: 1000px) {
+    body { padding: 16px 14px 40px; }
+    svg.concept-map { height: auto; aspect-ratio: 1620 / 1010; }
+    .map-wrap { min-height: 0; }
+    .util-hint { margin-left: 0; flex-basis: 100%; }
+    .audit-panel { max-width: none; }
+  }
+
+  @media print {
+    .map-controls, .utility-bar, .edit-actions, .add-string-btn, .add-lesson-btn,
+    .reset-positions-btn, .reset-all-btn, .all-toggle, .detail-actions { display: none !important; }
+    .audit-panel { background: #fff !important; border: 1px solid var(--line) !important; }
+    .audit-panel, .audit-panel * { color: var(--ink) !important; }
+    .audit-stat { background: var(--paper-warm) !important; }
+    .map-wrap, svg.concept-map { height: auto; min-height: 0; }
+    body { padding: 0; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; animation: none !important; }
+  }
 </style>
 </head>
 <body>
@@ -1290,59 +1330,61 @@
   </div>
   <div class="meta">
     22 lessons · 5 thread types<br>
-    Position = idea proximity, not time<br>
-    Hover to preview · click to pin · pinch to zoom
+    Position = idea proximity, not time
   </div>
 </header>
 
 <p class="intro">
-  Lessons clustered by <strong>shared threads</strong> rather than by time or domain. Lessons in the dense center share many connections; lessons toward the edges have fewer. <em>Hover any lesson</em> to fade everything except its threads. <em>Click a thread filter</em> to show or hide that connection type. The implicit threads — concept revisits, mechanical iteration — are <em>where the Connect conversation lives</em>.
+  Lessons clustered by <strong>shared threads</strong> rather than by time or domain. Lessons in the dense center share many connections; lessons toward the edges have fewer. <em>Hover any lesson</em> to fade everything except its threads. <em>Click a thread filter</em> to show or hide that connection type. The implicit threads — concept revisits, mechanical iteration — are <em>where the Connect conversation lives</em>: the moment a teacher explicitly names, in class, how today's lesson links back to an earlier one.
 </p>
 
 <div class="reading-guide">
   <strong>What the lines mean</strong>
-  Solid red = hard prerequisite (Lesson B literally needs Lesson A). Dashed navy/bronze = explicit skill ladders (CAD, LightBurn). Dotted teal = concept revisits. Long-dash magenta = mechanical iteration mode of work. The dotted/dashed lines are mostly <em>implicit in current curriculum</em> — visible to coaches, invisible to students.
+  Solid red = hard prerequisite (Lesson B literally needs Lesson A). Dashed navy/bronze = explicit skill ladders (CAD, laser fab). Fine-dash teal = concept revisits. Long-dash magenta = mechanical iteration mode of work. The dotted/dashed lines are mostly <em>implicit in current curriculum</em> — visible to coaches, invisible to students.
 </div>
 
 <div class="thread-controls">
   <span class="label">Threads</span>
-  <button class="thread-btn prereq active" data-thread="prereq">
-    <span class="swatch"></span> Hard prerequisites
+  <button class="thread-btn prereq active" data-thread="prereq" aria-pressed="true">
+    <svg class="swatch-line" width="22" height="4" aria-hidden="true"><line x1="0" y1="2" x2="22" y2="2" stroke="currentColor" stroke-width="2"/></svg> Hard prerequisites
   </button>
-  <button class="thread-btn cad active" data-thread="cad">
-    <span class="swatch dotted"></span> CAD ladder
+  <button class="thread-btn cad active" data-thread="cad" aria-pressed="true">
+    <svg class="swatch-line" width="22" height="4" aria-hidden="true"><line x1="0" y1="2" x2="22" y2="2" stroke="currentColor" stroke-width="2" stroke-dasharray="4,3"/></svg> CAD ladder
   </button>
-  <button class="thread-btn fab active" data-thread="fab">
-    <span class="swatch dotted"></span> LightBurn ladder
+  <button class="thread-btn fab active" data-thread="fab" aria-pressed="true">
+    <svg class="swatch-line" width="22" height="4" aria-hidden="true"><line x1="0" y1="2" x2="22" y2="2" stroke="currentColor" stroke-width="2" stroke-dasharray="4,3"/></svg> Laser fab ladder
   </button>
-  <button class="thread-btn concept active" data-thread="concept">
-    <span class="swatch dotted"></span> Concept revisits
+  <button class="thread-btn concept active" data-thread="concept" aria-pressed="true">
+    <svg class="swatch-line" width="22" height="4" aria-hidden="true"><line x1="0" y1="2" x2="22" y2="2" stroke="currentColor" stroke-width="2" stroke-dasharray="2.5,3.5"/></svg> Concept revisits
   </button>
-  <button class="thread-btn mode active" data-thread="mode">
-    <span class="swatch dotted"></span> Mechanical iteration
+  <button class="thread-btn mode active" data-thread="mode" aria-pressed="true">
+    <svg class="swatch-line" width="22" height="4" aria-hidden="true"><line x1="0" y1="2" x2="22" y2="2" stroke="currentColor" stroke-width="2" stroke-dasharray="6,3"/></svg> Mechanical iteration
   </button>
   <button class="thread-btn all-toggle" id="toggle-all">Hide all</button>
-  <button class="thread-btn add-string-btn" id="add-string-btn">+ Add String</button>
-  <button class="thread-btn add-lesson-btn" id="add-lesson-btn">+ Add Lesson</button>
-  <button class="thread-btn reset-positions-btn" id="reset-positions-btn" title="Restore original lesson positions">Reset positions</button>
-  <button class="thread-btn reset-all-btn" id="reset-all-btn" title="Restore original lessons, edges, and positions">Reset all</button>
+  <span class="edit-actions">
+    <button class="thread-btn add-string-btn" id="add-string-btn">+ Add Thread</button>
+    <button class="thread-btn add-lesson-btn" id="add-lesson-btn">+ Add Lesson</button>
+    <button class="thread-btn reset-positions-btn" id="reset-positions-btn" title="Restore original lesson positions (your moves are saved only in this browser)">Reset positions</button>
+    <button class="thread-btn reset-all-btn" id="reset-all-btn" title="Restore original lessons, edges, and positions">Reset all</button>
+  </span>
 </div>
 
 <div class="add-string-status" id="add-string-status" style="display:none;">
-  <span class="status-text">String mode: click first lesson</span>
+  <span class="status-text">Add-thread mode: click the first lesson</span>
   <button class="status-cancel" id="add-string-cancel">Cancel</button>
 </div>
 
 <div class="utility-bar">
   <div class="search-box">
     <span class="search-icon">⌕</span>
-    <input type="text" id="search-input" placeholder="Find a lesson…" autocomplete="off">
+    <input type="text" id="search-input" placeholder="Find a lesson… (Enter to jump)" autocomplete="off">
     <button class="search-clear" id="search-clear" title="Clear" style="display:none;">×</button>
+    <span class="search-count" id="search-count"></span>
   </div>
-  <button class="util-btn" id="trace-toggle" title="Highlight the full prerequisite / ladder chain when a lesson is focused">
+  <button class="util-btn" id="trace-toggle" aria-pressed="false" title="Highlight the full prerequisite / ladder chain when a lesson is focused">
     <span class="util-dot"></span> Trace chains
   </button>
-  <span class="util-hint">Pinch or use +/− to zoom · drag empty space to pan · <strong>click</strong> a lesson to pin it</span>
+  <span class="util-hint">Ctrl/⌘ + scroll to zoom (pinch on trackpad) · +/− buttons · drag empty space to pan · <strong>click</strong> a lesson to pin it · <strong>drag</strong> a lesson to move it (saved on this device)</span>
 </div>
 
 <div class="map-wrap">
@@ -1351,7 +1393,7 @@
     <button class="map-ctrl-btn" id="zoom-out" title="Zoom out">−</button>
     <button class="map-ctrl-btn fit" id="zoom-fit" title="Fit map to view">Fit</button>
   </div>
-  <svg class="concept-map" id="map" viewBox="0 0 1620 1010" xmlns="http://www.w3.org/2000/svg">
+  <svg class="concept-map" id="map" viewBox="0 0 1620 1010" xmlns="http://www.w3.org/2000/svg" role="group" aria-label="Curriculum concept map: 22 lessons connected by thread type">
     <defs>
       <marker id="arrow-prereq" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
         <path d="M0,0 L10,5 L0,10 z" fill="#A0364B"/>
@@ -1384,7 +1426,7 @@
   <div class="audit-panel" id="audit-panel">
     <div class="audit-header">
       <h3>Curriculum audit</h3>
-      <span class="audit-tag">Derived · live</span>
+      <span class="audit-tag" title="Computed from the visible map — updates as you filter">Derived · live</span>
     </div>
     <div class="audit-body" id="audit-body"></div>
   </div>
@@ -1392,7 +1434,7 @@
 
 <div class="user-strings-panel" id="user-strings-panel" style="display:none;">
   <div class="user-strings-header">
-    <h3>Your strings</h3>
+    <h3>Your threads</h3>
     <div class="user-strings-actions">
       <button class="ghost-btn" id="export-strings-btn">Export</button>
       <button class="ghost-btn danger" id="clear-strings-btn">Clear all</button>
@@ -1403,9 +1445,9 @@
 </div>
 
 <div class="picker-overlay" id="picker-overlay" style="display:none;">
-  <div class="picker-modal">
+  <div class="picker-modal" role="dialog" aria-modal="true" aria-labelledby="picker-summary">
     <div class="picker-summary" id="picker-summary"></div>
-    <h4>What kind of string?</h4>
+    <h4>What kind of thread?</h4>
     <div class="picker-threads">
       <button class="picker-thread prereq" data-thread="prereq">
         <span class="dot"></span>
@@ -1424,8 +1466,8 @@
       <button class="picker-thread fab" data-thread="fab">
         <span class="dot"></span>
         <div>
-          <div class="picker-thread-name">LightBurn ladder</div>
-          <div class="picker-thread-desc">Sequenced fabrication progression</div>
+          <div class="picker-thread-name">Laser fab ladder</div>
+          <div class="picker-thread-desc">Sequenced laser-cutting progression (LightBurn)</div>
         </div>
       </button>
       <button class="picker-thread concept" data-thread="concept">
@@ -1449,13 +1491,13 @@
     <input type="text" id="picker-label" placeholder="e.g. shared variable testing across both" autocomplete="off">
     <div class="picker-actions">
       <button class="picker-btn cancel" id="picker-cancel">Cancel</button>
-      <button class="picker-btn primary" id="picker-add" disabled>Add string</button>
+      <button class="picker-btn primary" id="picker-add" disabled>Add thread</button>
     </div>
   </div>
 </div>
 
 <div class="picker-overlay" id="lesson-editor-overlay" style="display:none;">
-  <div class="picker-modal lesson-editor">
+  <div class="picker-modal lesson-editor" role="dialog" aria-modal="true" aria-labelledby="lesson-editor-title">
     <div class="picker-summary" id="lesson-editor-title">Edit lesson</div>
 
     <h4>Lesson name</h4>
@@ -1485,7 +1527,7 @@
   </div>
 </div>
 
-<div class="edge-popover" id="edge-popover">
+<div class="edge-popover" id="edge-popover" role="dialog" aria-labelledby="edge-popover-header">
   <div class="edge-popover-header" id="edge-popover-header"></div>
   <div class="edge-popover-meta" id="edge-popover-meta"></div>
   <h5>Thread type</h5>
@@ -1598,7 +1640,7 @@ const EDGES = [
 const THREAD_LABELS = {
   prereq:    'Hard prerequisite',
   cad:       'CAD ladder',
-  fab:       'LightBurn ladder',
+  fab:       'Laser fab ladder',
   concept:   'Concept revisit',
   mode:      'Mechanical iteration',
 };
@@ -1679,6 +1721,8 @@ function renderEdges() {
     hit.setAttribute('d', d);
     hit.setAttribute('data-edge-id', e.id);
     hit.setAttribute('data-edge-kind', 'builtin');
+    hit.setAttribute('data-thread', e.thread);
+    if (!visibleThreads.has(e.thread)) hit.classList.add('hidden');
     hit.addEventListener('click', (ev) => onEdgeClick(ev, e.id, 'builtin'));
     edgesGroup.appendChild(hit);
   });
@@ -1691,6 +1735,9 @@ function renderNodes() {
     g.setAttribute('class', 'node-group');
     g.setAttribute('transform', `translate(${n.x}, ${n.y})`);
     g.dataset.id = n.id;
+    g.setAttribute('tabindex', '0');
+    g.setAttribute('role', 'button');
+    g.setAttribute('aria-label', n.sub ? `${n.name}, ${n.sub}` : n.name);
 
     const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
     rect.setAttribute('class', 'node-rect' + (n.type === 'pedagogy' ? ' pedagogy-node' : '') + (n.type === 'capstone' ? ' capstone-node' : ''));
@@ -1720,16 +1767,28 @@ function renderNodes() {
         if (pinnedId) focusNode(pinnedId); else unfocus();
       }
     });
-    g.addEventListener('click', (e) => {
-
+    function activateNode() {
       if (dragState.justDragged) {
         dragState.justDragged = false;
         return;
       }
       if (stringMode.active) { handleStringClick(n.id); return; }
 
-      if (pinnedId === n.id) { pinnedId = null; unfocus(); }
+      if (pinnedId === n.id) { pinnedId = null; unfocus(); showDetail(n.id); }
       else { pinnedId = n.id; focusNode(n.id); }
+    }
+
+    g.addEventListener('click', activateNode);
+    g.addEventListener('focus', () => {
+      if (!stringMode.active && !dragState.active) focusNode(n.id);
+    });
+    g.addEventListener('blur', () => {
+      if (!stringMode.active && !dragState.active) {
+        if (pinnedId) focusNode(pinnedId); else unfocus();
+      }
+    });
+    g.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); activateNode(); }
     });
 
     g.addEventListener('pointerdown', (e) => onNodePointerDown(e, n.id));
@@ -1743,17 +1802,6 @@ NODES.forEach(n => { ORIGINAL_POSITIONS[n.id] = { x: n.x, y: n.y }; });
 const ORIGINAL_NODES_JSON = JSON.stringify(NODES);
 const ORIGINAL_EDGES_JSON = JSON.stringify(EDGES);
 
-(function loadNodePositionsAtStartup() {
-  try {
-    const raw = localStorage.getItem('tetc_concept_map_node_positions_v1');
-    if (!raw) return;
-    const saved = JSON.parse(raw);
-    NODES.forEach(n => {
-      if (saved[n.id]) { n.x = saved[n.id].x; n.y = saved[n.id].y; }
-    });
-  } catch (e) {}
-})();
-
 (function loadEditedNodesAtStartup() {
   try {
     const raw = localStorage.getItem('tetc_concept_map_nodes_v1');
@@ -1766,6 +1814,17 @@ const ORIGINAL_EDGES_JSON = JSON.stringify(EDGES);
 
     Object.keys(nodeById).forEach(k => delete nodeById[k]);
     NODES.forEach(n => { nodeById[n.id] = n; });
+  } catch (e) {}
+})();
+
+(function loadNodePositionsAtStartup() {
+  try {
+    const raw = localStorage.getItem('tetc_concept_map_node_positions_v1');
+    if (!raw) return;
+    const saved = JSON.parse(raw);
+    NODES.forEach(n => {
+      if (saved[n.id]) { n.x = saved[n.id].x; n.y = saved[n.id].y; }
+    });
   } catch (e) {}
 })();
 
@@ -1804,7 +1863,13 @@ function saveEditedEdges() {
 renderEdges();
 renderNodes();
 
+function refreshFocus() {
+  if (pinnedId && nodeById[pinnedId]) { focusNode(pinnedId); }
+  else { pinnedId = null; unfocus(); }
+}
+
 function focusNode(id) {
+  if (!nodeById[id]) { unfocus(); return; }
   svg.classList.add('has-focus');
   const groups = nodesGroup.querySelectorAll('.node-group');
   const edges = svg.querySelectorAll('.edge');
@@ -1896,22 +1961,28 @@ function showDetail(id) {
       const items = connections[thread];
       connectionsHtml += `<div style="margin-bottom:6px; font-size:13px;">
         <span class="thread-chip ${thread}" style="margin-right:8px;">${THREAD_LABELS[thread]}</span>
-        <span style="color:var(--ink-soft);">${items.map(x => x.label ? `<em style="font-style:italic; color:var(--ink);">${x.name}</em> <span style="opacity:0.7; font-size:11px;">(${x.label})</span>` : `<em style="font-style:italic; color:var(--ink);">${x.name}</em>`).join(' · ')}</span>
+        <span style="color:var(--ink-soft);">${items.map(x => x.label ? `<em style="font-style:italic; color:var(--ink);">${escapeHtml(x.name)}</em> <span style="opacity:0.7; font-size:11px;">(${escapeHtml(x.label)})</span>` : `<em style="font-style:italic; color:var(--ink);">${escapeHtml(x.name)}</em>`).join(' · ')}</span>
       </div>`;
     }
     connectionsHtml += '</div>';
   }
 
   const star = n.star ? '<span class="star">★</span>' : '';
+  const isPinned = pinnedId === id;
+  const badge = isPinned
+    ? '<span class="pin-badge">Pinned · click lesson again to unpin</span>'
+    : '<span class="pin-badge soft">Preview · click to pin</span>';
   detail.innerHTML = `
-    <h3>${star}${n.name || ''}</h3>
-    <div class="meta-row">${n.sub || ''}</div>
-    <div class="skill">${n.skill || ''}</div>
+    <h3>${star}${escapeHtml(n.name || '')}</h3>
+    ${badge}
+    <div class="meta-row">${escapeHtml(n.sub || '')}</div>
+    <div class="skill">${escapeHtml(n.skill || '')}</div>
     ${connectionsHtml}
+    ${isPinned ? `
     <div class="detail-actions">
       <button class="detail-action-btn" data-edit-id="${id}">Edit lesson</button>
       <button class="detail-action-btn danger" data-delete-id="${id}">Delete</button>
-    </div>
+    </div>` : ''}
   `;
   const editBtn = detail.querySelector('[data-edit-id]');
   const delBtn = detail.querySelector('[data-delete-id]');
@@ -1931,7 +2002,8 @@ document.querySelectorAll('.thread-btn[data-thread]').forEach(btn => {
       btn.classList.add('active');
       btn.classList.remove('dim');
     }
-    svg.querySelectorAll('.edge').forEach(e => {
+    btn.setAttribute('aria-pressed', visibleThreads.has(t) ? 'true' : 'false');
+    svg.querySelectorAll('.edge, .edge-hit').forEach(e => {
       const thread = e.dataset.thread;
       if (visibleThreads.has(thread)) e.classList.remove('hidden');
       else e.classList.add('hidden');
@@ -1948,16 +2020,18 @@ document.getElementById('toggle-all').addEventListener('click', () => {
     document.querySelectorAll('.thread-btn[data-thread]').forEach(b => {
       b.classList.remove('active');
       b.classList.add('dim');
+      b.setAttribute('aria-pressed', 'false');
     });
-    svg.querySelectorAll('.edge').forEach(e => e.classList.add('hidden'));
+    svg.querySelectorAll('.edge, .edge-hit').forEach(e => e.classList.add('hidden'));
     document.getElementById('toggle-all').textContent = 'Show all';
   } else {
     ['prereq','cad','fab','concept','mode'].forEach(t => visibleThreads.add(t));
     document.querySelectorAll('.thread-btn[data-thread]').forEach(b => {
       b.classList.add('active');
       b.classList.remove('dim');
+      b.setAttribute('aria-pressed', 'true');
     });
-    svg.querySelectorAll('.edge').forEach(e => e.classList.remove('hidden'));
+    svg.querySelectorAll('.edge, .edge-hit').forEach(e => e.classList.remove('hidden'));
     document.getElementById('toggle-all').textContent = 'Hide all';
   }
   if (typeof renderAudit === 'function') renderAudit();
@@ -2063,28 +2137,27 @@ function onPointerUp(e) {
 }
 
 function redrawEdgesForNode(id) {
-
-  EDGES.forEach((edge, i) => {
+  EDGES.forEach((edge) => {
     if (edge.from !== id && edge.to !== id) return;
-    const path = edgesGroup.querySelector(`path[data-from="${edge.from}"][data-to="${edge.to}"]`);
-    if (!path) return;
     const from = nodeById[edge.from];
     const to = nodeById[edge.to];
-    if (from && to) path.setAttribute('d', bezierPath(from, to));
+    if (!from || !to) return;
+    const d = bezierPath(from, to);
+    edgesGroup.querySelectorAll(`path[data-edge-id="${edge.id}"]`).forEach(p => p.setAttribute('d', d));
   });
 
   userStrings.forEach(s => {
     if (s.from !== id && s.to !== id) return;
-    const path = userEdgesGroup.querySelector(`path[data-user-id="${s.id}"]`);
-    if (!path) return;
     const from = nodeById[s.from];
     const to = nodeById[s.to];
-    if (from && to) path.setAttribute('d', bezierPath(from, to));
+    if (!from || !to) return;
+    const d = bezierPath(from, to);
+    userEdgesGroup.querySelectorAll(`path[data-edge-id="${s.id}"]`).forEach(p => p.setAttribute('d', d));
   });
 }
 
 document.getElementById('reset-positions-btn').addEventListener('click', () => {
-  if (!confirm('Reset all lesson positions to the default layout? Your strings will not be affected.')) return;
+  if (!confirm('Reset all lesson positions to the default layout? Your threads will not be affected.')) return;
   NODES.forEach(n => {
     if (ORIGINAL_POSITIONS[n.id]) {
       n.x = ORIGINAL_POSITIONS[n.id].x;
@@ -2097,9 +2170,10 @@ document.getElementById('reset-positions-btn').addEventListener('click', () => {
   renderNodes();
   renderUserEdges();
 
-  svg.querySelectorAll('.edge').forEach(e => {
+  svg.querySelectorAll('.edge, .edge-hit').forEach(e => {
     if (!visibleThreads.has(e.dataset.thread)) e.classList.add('hidden');
   });
+  refreshFocus();
 });
 
 const STORAGE_KEY = 'tetc_concept_map_user_strings_v1';
@@ -2147,6 +2221,8 @@ function renderUserEdges() {
     hit.setAttribute('d', d);
     hit.setAttribute('data-edge-id', s.id);
     hit.setAttribute('data-edge-kind', 'user');
+    hit.setAttribute('data-thread', s.thread);
+    if (!visibleThreads.has(s.thread)) hit.classList.add('hidden');
     hit.addEventListener('click', (ev) => onEdgeClick(ev, s.id, 'user'));
     userEdgesGroup.appendChild(hit);
   });
@@ -2172,7 +2248,7 @@ function renderStringsList() {
         <div class="string-meta">${THREAD_LABELS[s.thread]}</div>
         ${labelHtml}
       </div>
-      <button class="string-delete" data-string-id="${s.id}" title="Delete this string">×</button>
+      <button class="string-delete" data-string-id="${s.id}" title="Delete this thread">×</button>
     </li>`;
   }).join('');
   list.querySelectorAll('.string-delete').forEach(btn => {
@@ -2202,12 +2278,12 @@ function setStringMode(on) {
     btn.textContent = '× Cancel';
     status.style.display = 'flex';
     document.querySelector('#add-string-status .status-text').textContent =
-      'String mode: click first lesson';
+      'Add-thread mode: click the first lesson';
     unfocus();
   } else {
     svg.classList.remove('string-mode');
     btn.classList.remove('active');
-    btn.textContent = '+ Add String';
+    btn.textContent = '+ Add Thread';
     status.style.display = 'none';
     nodesGroup.querySelectorAll('.node-group.first-pick').forEach(g => g.classList.remove('first-pick'));
   }
@@ -2221,14 +2297,14 @@ function handleStringClick(id) {
     if (node) node.classList.add('first-pick');
     const fromName = nodeById[id].name;
     document.querySelector('#add-string-status .status-text').textContent =
-      `From "${fromName}" — now click second lesson`;
+      `From "${fromName}" — now click the second lesson`;
   } else {
     if (id === stringMode.firstId) {
 
       stringMode.firstId = null;
       nodesGroup.querySelectorAll('.node-group.first-pick').forEach(g => g.classList.remove('first-pick'));
       document.querySelector('#add-string-status .status-text').textContent =
-        'String mode: click first lesson';
+        'Add-thread mode: click the first lesson';
       return;
     }
 
@@ -2252,7 +2328,15 @@ let pickerSelectedThread = null;
 let pickerFromId = null;
 let pickerToId = null;
 
+let pickerOpener = null, lessonEditorOpener = null, edgePopoverOpener = null;
+function restoreFocus(opener, container) {
+  if (opener && opener.focus && (container.contains(document.activeElement) || document.activeElement === document.body || document.activeElement === null)) {
+    opener.focus();
+  }
+}
+
 function openPicker(fromId, toId) {
+  pickerOpener = document.activeElement;
   pickerFromId = fromId;
   pickerToId = toId;
   pickerSelectedThread = null;
@@ -2269,6 +2353,8 @@ function closePicker() {
   pickerSelectedThread = null;
   pickerFromId = null;
   pickerToId = null;
+  restoreFocus(pickerOpener, pickerOverlay);
+  pickerOpener = null;
 }
 
 document.querySelectorAll('.picker-thread').forEach(btn => {
@@ -2287,7 +2373,7 @@ pickerCancel.addEventListener('click', () => {
   nodesGroup.querySelectorAll('.node-group.first-pick').forEach(g => g.classList.remove('first-pick'));
   if (stringMode.active) {
     document.querySelector('#add-string-status .status-text').textContent =
-      'String mode: click first lesson';
+      'Add-thread mode: click the first lesson';
   }
 });
 
@@ -2322,7 +2408,7 @@ pickerOverlay.addEventListener('click', (e) => {
     nodesGroup.querySelectorAll('.node-group.first-pick').forEach(g => g.classList.remove('first-pick'));
     if (stringMode.active) {
       document.querySelector('#add-string-status .status-text').textContent =
-        'String mode: click first lesson';
+        'Add-thread mode: click the first lesson';
     }
   }
 });
@@ -2339,7 +2425,7 @@ document.addEventListener('keydown', (e) => {
 
 document.getElementById('clear-strings-btn').addEventListener('click', () => {
   if (userStrings.length === 0) return;
-  if (!confirm(`Delete all ${userStrings.length} of your strings? This cannot be undone.`)) return;
+  if (!confirm(`Delete all ${userStrings.length} of your threads? This cannot be undone.`)) return;
   userStrings = [];
   saveUserStrings();
   renderUserEdges();
@@ -2350,14 +2436,14 @@ document.getElementById('clear-strings-btn').addEventListener('click', () => {
 document.getElementById('export-strings-btn').addEventListener('click', () => {
   const out = document.getElementById('strings-export-output');
   if (userStrings.length === 0) {
-    out.textContent = 'No strings to export yet.';
+    out.textContent = 'No threads to export yet.';
     out.classList.add('visible');
     return;
   }
   const lines = [
-    'TETC CURRICULUM CONCEPT MAP — USER-ADDED STRINGS',
+    'TETC CURRICULUM CONCEPT MAP — USER-ADDED THREADS',
     '='.repeat(54),
-    `Total: ${userStrings.length} string(s)`,
+    `Total: ${userStrings.length} thread(s)`,
     '',
   ];
 
@@ -2380,7 +2466,7 @@ document.getElementById('export-strings-btn').addEventListener('click', () => {
   });
   out.textContent = lines.join('\n');
   out.classList.add('visible');
-  out.scrollIntoView({ behavior: 'smooth', block: 'end' });
+  out.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'end' });
 });
 
 loadUserStrings();
@@ -2404,6 +2490,7 @@ let editingLessonId = null;
 let editingLessonMarker = 'none';
 
 function openLessonEditor(id) {
+  lessonEditorOpener = document.activeElement;
   editingLessonId = id;
   const node = nodeById[id];
   if (!node) return;
@@ -2419,6 +2506,7 @@ function openLessonEditor(id) {
 }
 
 function openAddLessonEditor() {
+  lessonEditorOpener = document.activeElement;
   editingLessonId = null;
   leTitle.innerHTML = '<em>New lesson</em>';
   leName.value = '';
@@ -2434,6 +2522,8 @@ function openAddLessonEditor() {
 function closeLessonEditor() {
   lessonEditorOverlay.style.display = 'none';
   editingLessonId = null;
+  restoreFocus(lessonEditorOpener, lessonEditorOverlay);
+  lessonEditorOpener = null;
 }
 
 function updateMarkerSelection() {
@@ -2468,6 +2558,7 @@ leSaveBtn.addEventListener('click', () => {
   const skill = leSkill.value.trim();
   const marker = editingLessonMarker;
 
+  let newLessonId = null;
   if (editingLessonId) {
 
     const node = nodeById[editingLessonId];
@@ -2481,16 +2572,21 @@ leSaveBtn.addEventListener('click', () => {
   } else {
 
     const id = 'n_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6);
-    const newNode = {
-      id, name, sub, skill,
-      x: 600, y: 360,
-      w: Math.max(140, Math.min(220, name.length * 8 + 40)),
-      h: 50,
-    };
+    const w = Math.max(140, Math.min(220, name.length * 8 + 40));
+    const h = 50;
+    const r = svg.getBoundingClientRect();
+    const c = clientToContent(r.left + r.width / 2, r.top + r.height / 2);
+    let nx = c.x - w / 2;
+    let ny = c.y - h / 2;
+    while (NODES.some(o => Math.abs(o.x - nx) < 30 && Math.abs(o.y - ny) < 30)) { nx += 28; ny += 28; }
+    nx = Math.max(0, Math.min(VBW - w, nx));
+    ny = Math.max(0, Math.min(VBH - h, ny));
+    const newNode = { id, name, sub, skill, x: nx, y: ny, w, h };
     if (marker === 'pedagogy') { newNode.type = 'pedagogy'; newNode.star = true; }
     if (marker === 'capstone') { newNode.type = 'capstone'; newNode.star = true; }
     NODES.push(newNode);
     nodeById[id] = newNode;
+    newLessonId = id;
   }
   saveEditedNodes();
   saveNodePositions();
@@ -2499,35 +2595,28 @@ leSaveBtn.addEventListener('click', () => {
   renderNodes();
   renderUserEdges();
   applyVisibilityToAllEdges();
+  refreshFocus();
   closeLessonEditor();
+  if (newLessonId) { pinnedId = newLessonId; focusNode(newLessonId); centerOnNode(newLessonId); }
 });
 
 function confirmDeleteLesson(id) {
   const node = nodeById[id];
-  if (!node) return;
+  if (!node) return false;
   const connectedBuiltin = EDGES.filter(e => e.from === id || e.to === id).length;
   const connectedUser = userStrings.filter(s => s.from === id || s.to === id).length;
   const total = connectedBuiltin + connectedUser;
   const msg = total === 0
     ? `Delete "${node.name}"?`
     : `Delete "${node.name}"? This will also remove ${total} connected line${total === 1 ? '' : 's'}.`;
-  if (!confirm(msg)) return;
+  if (!confirm(msg)) return false;
   deleteLesson(id);
+  return true;
 }
 
 leDeleteBtn.addEventListener('click', () => {
   if (!editingLessonId) return;
-  const node = nodeById[editingLessonId];
-  if (!node) return;
-  const connectedBuiltin = EDGES.filter(e => e.from === editingLessonId || e.to === editingLessonId).length;
-  const connectedUser = userStrings.filter(s => s.from === editingLessonId || s.to === editingLessonId).length;
-  const total = connectedBuiltin + connectedUser;
-  const msg = total === 0
-    ? `Delete "${node.name}"?`
-    : `Delete "${node.name}"? This will also remove ${total} connected line${total === 1 ? '' : 's'}.`;
-  if (!confirm(msg)) return;
-  deleteLesson(editingLessonId);
-  closeLessonEditor();
+  if (confirmDeleteLesson(editingLessonId)) closeLessonEditor();
 });
 
 function deleteLesson(id) {
@@ -2555,6 +2644,7 @@ function deleteLesson(id) {
   const detail = document.getElementById('detail');
   detail.classList.add('empty');
   detail.innerHTML = 'Hover a lesson to see its threads. Click a thread filter above to isolate one connection type.';
+  refreshFocus();
 }
 
 lessonEditorOverlay.addEventListener('click', (e) => {
@@ -2604,6 +2694,7 @@ function onEdgeClick(ev, edgeId, kind) {
   else edge = userStrings.find(s => s.id === edgeId);
   if (!edge) return;
 
+  edgePopoverOpener = document.activeElement;
   editingEdge = { id: edgeId, kind, thread: edge.thread, label: edge.label || '' };
   const fromName = nodeById[edge.from] ? nodeById[edge.from].name : edge.from;
   const toName = nodeById[edge.to] ? nodeById[edge.to].name : edge.to;
@@ -2633,6 +2724,8 @@ function onEdgeClick(ev, edgeId, kind) {
 function closeEdgePopover() {
   edgePopover.classList.remove('visible');
   editingEdge = null;
+  restoreFocus(edgePopoverOpener, edgePopover);
+  edgePopoverOpener = null;
 }
 
 edgePopoverCancel.addEventListener('click', closeEdgePopover);
@@ -2658,6 +2751,7 @@ edgePopoverSave.addEventListener('click', () => {
   renderUserEdges();
   renderStringsList();
   applyVisibilityToAllEdges();
+  refreshFocus();
   closeEdgePopover();
 });
 edgePopoverDelete.addEventListener('click', () => {
@@ -2675,6 +2769,7 @@ edgePopoverDelete.addEventListener('click', () => {
   renderUserEdges();
   renderStringsList();
   applyVisibilityToAllEdges();
+  refreshFocus();
   closeEdgePopover();
 });
 
@@ -2690,7 +2785,7 @@ document.addEventListener('keydown', (e) => {
 });
 
 function applyVisibilityToAllEdges() {
-  svg.querySelectorAll('.edge').forEach(edgeEl => {
+  svg.querySelectorAll('.edge, .edge-hit').forEach(edgeEl => {
     const thread = edgeEl.dataset.thread;
     if (visibleThreads.has(thread)) edgeEl.classList.remove('hidden');
     else edgeEl.classList.add('hidden');
@@ -2698,7 +2793,7 @@ function applyVisibilityToAllEdges() {
 }
 
 document.getElementById('reset-all-btn').addEventListener('click', () => {
-  if (!confirm('Reset everything to the original state?\n\nThis will:\n• Restore the original 22 lessons\n• Restore the original built-in connections\n• Reset positions to defaults\n• Delete ALL strings you added\n\nThis cannot be undone.')) return;
+  if (!confirm('Reset everything to the original state?\n\nThis will:\n• Restore the original 22 lessons\n• Restore the original built-in connections\n• Reset positions to defaults\n• Delete ALL threads you added\n\nThis cannot be undone.')) return;
 
   try {
     localStorage.removeItem('tetc_concept_map_node_positions_v1');
@@ -2728,6 +2823,8 @@ document.getElementById('reset-all-btn').addEventListener('click', () => {
   const detail = document.getElementById('detail');
   detail.classList.add('empty');
   detail.innerHTML = 'Hover a lesson to see its threads. Click a thread filter above to isolate one connection type.';
+  pinnedId = null;
+  refreshFocus();
   renderAudit();
 });
 
@@ -2805,6 +2902,7 @@ document.getElementById('zoom-fit').addEventListener('click', fitView);
 
 const panState = { active: false, moved: false, pointerId: null, startVb: null, startTx: 0, startTy: 0 };
 svg.addEventListener('pointerdown', (e) => {
+  if (panState.active) return;
   if (stringMode.active) return;
   if (e.target.closest('.node-group')) return;
   if (e.target.classList.contains('edge-hit')) return;
@@ -2827,8 +2925,9 @@ svg.addEventListener('pointermove', (e) => {
   view.ty = panState.startTy + dy;
   applyView();
 });
-function endPan() {
+function endPan(e) {
   if (!panState.active) return;
+  if (e && e.pointerId !== panState.pointerId) return;
   panState.active = false;
   svg.classList.remove('panning');
 }
@@ -2839,7 +2938,11 @@ svg.addEventListener('click', (e) => {
   if (panState.moved) { panState.moved = false; return; }
   if (e.target.closest('.node-group')) return;
   if (e.target.classList.contains('edge-hit')) return;
-  if (pinnedId) { pinnedId = null; unfocus(); }
+  if (pinnedId) {
+    pinnedId = null; unfocus();
+    detail.classList.add('empty');
+    detail.innerHTML = 'Hover a lesson to see its threads. Click to pin it. Use the thread filters above to isolate one connection type.';
+  }
 });
 
 function directionalNeighbors(id, dir) {
@@ -2870,6 +2973,7 @@ function traceChain(startId) {
 document.getElementById('trace-toggle').addEventListener('click', () => {
   traceMode = !traceMode;
   document.getElementById('trace-toggle').classList.toggle('active', traceMode);
+  document.getElementById('trace-toggle').setAttribute('aria-pressed', String(traceMode));
   if (pinnedId) focusNode(pinnedId);
 });
 
@@ -2917,22 +3021,44 @@ function renderEdgeLabelsFor(edgeEls) {
 
 const searchInput = document.getElementById('search-input');
 const searchClear = document.getElementById('search-clear');
+const searchCount = document.getElementById('search-count');
+let searchMatches = [];
 function applySearch() {
   const q = searchInput.value.trim().toLowerCase();
   searchClear.style.display = q ? 'block' : 'none';
+  searchMatches = [];
   if (!q) {
     svg.classList.remove('search-active');
     nodesGroup.querySelectorAll('.node-group').forEach(g => g.classList.remove('search-match'));
+    searchCount.textContent = '';
+    searchCount.classList.remove('none');
     return;
   }
-  svg.classList.add('search-active');
   nodesGroup.querySelectorAll('.node-group').forEach(g => {
     const n = nodeById[g.dataset.id];
     const hay = ((n && n.name || '') + ' ' + (n && n.sub || '') + ' ' + (n && n.skill || '')).toLowerCase();
-    g.classList.toggle('search-match', hay.includes(q));
+    const hit = hay.includes(q);
+    g.classList.toggle('search-match', hit);
+    if (hit) searchMatches.push(g.dataset.id);
   });
+  svg.classList.toggle('search-active', searchMatches.length > 0);
+  if (searchMatches.length === 0) {
+    searchCount.textContent = 'No matches';
+    searchCount.classList.add('none');
+  } else {
+    searchCount.textContent = searchMatches.length + (searchMatches.length === 1 ? ' match' : ' matches');
+    searchCount.classList.remove('none');
+  }
 }
 searchInput.addEventListener('input', applySearch);
+searchInput.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' && searchMatches.length) {
+    e.preventDefault();
+    pinnedId = searchMatches[0];
+    focusNode(searchMatches[0]);
+    centerOnNode(searchMatches[0]);
+  }
+});
 searchClear.addEventListener('click', () => { searchInput.value = ''; applySearch(); searchInput.focus(); });
 
 function computeAudit() {
@@ -2961,15 +3087,15 @@ function renderAudit() {
   const a = computeAudit();
   const body = document.getElementById('audit-body');
   if (!body) return;
-  const tcOrder = [['prereq', 'Prereq'], ['cad', 'CAD'], ['fab', 'LightBurn'],
+  const tcOrder = [['prereq', 'Prereq'], ['cad', 'CAD'], ['fab', 'Laser fab'],
                    ['concept', 'Concept'], ['mode', 'Iteration']];
-  const jumpItem = (n) => `<span class="audit-item" data-jump="${n.id}">${escapeHtml(n.name)}</span>`;
+  const jumpItem = (n) => `<button type="button" class="audit-item" data-jump="${n.id}">${escapeHtml(n.name)}</button>`;
   body.innerHTML = `
     <div class="audit-stat-grid">
       <div class="audit-stat"><div class="num">${a.totalNodes}</div><div class="lab">Lessons</div></div>
       <div class="audit-stat"><div class="num">${a.totalEdges}</div><div class="lab">Visible threads</div></div>
       <div class="audit-stat"><div class="num ${a.orphans.length ? 'warn' : ''}">${a.orphans.length}</div><div class="lab">Unconnected</div></div>
-      <div class="audit-stat"><div class="num">${a.implicitOnly.length}</div><div class="lab">Implicit-only</div></div>
+      <div class="audit-stat" title="Lessons connected only by implicit threads (concept revisits, mechanical iteration)"><div class="num">${a.implicitOnly.length}</div><div class="lab">Implicit-only</div></div>
     </div>
     <div class="audit-section">
       <h4>Threads by type</h4>
@@ -2979,12 +3105,12 @@ function renderAudit() {
     </div>
     <div class="audit-section">
       <h4>Most-connected lessons</h4>
-      <div class="audit-chip-row">${a.hubs.length ? a.hubs.map(n => `<span class="audit-item" data-jump="${n.id}">${escapeHtml(n.name)} <span class="cnt">${a.degree[n.id]}</span></span>`).join('') : '<span class="audit-empty">None visible</span>'}</div>
+      <div class="audit-chip-row">${a.hubs.length ? a.hubs.map(n => `<button type="button" class="audit-item" data-jump="${n.id}">${escapeHtml(n.name)} <span class="cnt">${a.degree[n.id]}</span></button>`).join('') : '<span class="audit-empty">None visible</span>'}</div>
     </div>
     <div class="audit-section">
       <h4>Implicit-only lessons</h4>
       <div class="audit-chip-row">${a.implicitOnly.length ? a.implicitOnly.map(jumpItem).join('') : '<span class="audit-empty">None</span>'}</div>
-      <div class="audit-note">Connected only through concept / iteration / pedagogy — the implicit curriculum a student never sees named. These are the Connect candidates.</div>
+      <div class="audit-note">Connected only through concept revisits or mechanical iteration — the implicit curriculum a student never sees named. These are the Connect candidates.</div>
     </div>
     ${a.orphans.length ? `<div class="audit-section"><h4>Unconnected lessons</h4><div class="audit-chip-row">${a.orphans.map(jumpItem).join('')}</div></div>` : ''}
   `;
